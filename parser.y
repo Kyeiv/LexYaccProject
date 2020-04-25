@@ -40,6 +40,16 @@
 		}
 		return 0;
 	}
+
+	void handleNewVariableName(char* variableName)
+	{
+		if(czyBylo(variableName) == 0)
+		{
+			zmienneLiczbowe[rozmiarZmienneLiczbowe] = variableName;
+			printf("wartosc zmiennej: %s znakkonca \n", zmienneLiczbowe[rozmiarZmienneLiczbowe]);
+			rozmiarZmienneLiczbowe++;
+		}
+	}
 %}
 
 %union SUPER_TYPE
@@ -78,16 +88,8 @@ instrukcja: deklaracja_zmiennej ';'
 | instrukcja instrukcja
 ;
 
-deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ { 
-	char* value = yylval.stype;
-
-	if(czyBylo(value) == 0)
-	{
-		zmienneLiczbowe[rozmiarZmienneLiczbowe] = value;
-		printf("wartosc zmiennej: %s znakkonca \n", zmienneLiczbowe[rozmiarZmienneLiczbowe]);
-		rozmiarZmienneLiczbowe++;
-	}
-}
+deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ { char* value = yylval.stype; handleNewVariableName(value); 
+int i=5;}
 | typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ { }
 | typ_zmiennej_logicznej NAZWA_ZMIENNEJ { }
 | typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' WARTOSC_STRING { }

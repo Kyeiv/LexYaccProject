@@ -95,9 +95,19 @@
 		return 0;
 	}
 
+	void handleNewVariableName(char* variableName)
+	{
+		if(czyBylo(variableName) == 0)
+		{
+			zmienneLiczbowe[rozmiarZmienneLiczbowe] = variableName;
+			printf("wartosc zmiennej: %s znakkonca \n", zmienneLiczbowe[rozmiarZmienneLiczbowe]);
+			rozmiarZmienneLiczbowe++;
+		}
+	}
+
 
 /* Line 189 of yacc.c  */
-#line 101 "parser.c"
+#line 111 "parser.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -141,12 +151,12 @@
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union 
 /* Line 214 of yacc.c  */
-#line 45 "parser.y"
+#line 55 "parser.y"
 SUPER_TYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 46 "parser.y"
+#line 56 "parser.y"
 
 	double dtype;
 	char* stype;
@@ -154,7 +164,7 @@ SUPER_TYPE
 
 
 /* Line 214 of yacc.c  */
-#line 158 "parser.c"
+#line 168 "parser.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -166,7 +176,7 @@ SUPER_TYPE
 
 
 /* Line 264 of yacc.c  */
-#line 170 "parser.c"
+#line 180 "parser.c"
 
 #ifdef short
 # undef short
@@ -457,9 +467,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    64,    64,    65,    66,    68,    69,    70,    71,    72,
-      73,    74,    77,    78,    81,    91,    92,    93,    94,    95,
-      96,    99,   100,   103,   106,   107,   110
+       0,    74,    74,    75,    76,    78,    79,    80,    81,    82,
+      83,    84,    87,    88,    91,    93,    94,    95,    96,    97,
+      98,   101,   102,   105,   108,   109,   112
 };
 #endif
 
@@ -1381,114 +1391,106 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 64 "parser.y"
+#line 74 "parser.y"
     { printf("dobre wyr c++ \n"); ;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 65 "parser.y"
+#line 75 "parser.y"
     { yyerror("Obsluga bledu"); yyerrok;;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 68 "parser.y"
+#line 78 "parser.y"
     {  ;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 70 "parser.y"
+#line 80 "parser.y"
     {  ;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 71 "parser.y"
+#line 81 "parser.y"
     { ;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 72 "parser.y"
+#line 82 "parser.y"
     { ;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 73 "parser.y"
+#line 83 "parser.y"
     { ;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 81 "parser.y"
-    { 
-	char* value = yylval.stype;
-
-	if(czyBylo(value) == 0)
-	{
-		zmienneLiczbowe[rozmiarZmienneLiczbowe] = value;
-		printf("wartosc zmiennej: %s znakkonca \n", zmienneLiczbowe[rozmiarZmienneLiczbowe]);
-		rozmiarZmienneLiczbowe++;
-	}
-;}
+#line 91 "parser.y"
+    { char* value = yylval.stype; handleNewVariableName(value); 
+int i=5;;}
     break;
 
   case 15:
-
-/* Line 1455 of yacc.c  */
-#line 91 "parser.y"
-    { ;}
-    break;
-
-  case 16:
-
-/* Line 1455 of yacc.c  */
-#line 92 "parser.y"
-    { ;}
-    break;
-
-  case 17:
 
 /* Line 1455 of yacc.c  */
 #line 93 "parser.y"
     { ;}
     break;
 
-  case 18:
+  case 16:
 
 /* Line 1455 of yacc.c  */
 #line 94 "parser.y"
     { ;}
     break;
 
-  case 19:
+  case 17:
 
 /* Line 1455 of yacc.c  */
 #line 95 "parser.y"
     { ;}
     break;
 
-  case 20:
+  case 18:
 
 /* Line 1455 of yacc.c  */
 #line 96 "parser.y"
     { ;}
     break;
 
+  case 19:
+
+/* Line 1455 of yacc.c  */
+#line 97 "parser.y"
+    { ;}
+    break;
+
+  case 20:
+
+/* Line 1455 of yacc.c  */
+#line 98 "parser.y"
+    { ;}
+    break;
+
 
 
 /* Line 1455 of yacc.c  */
-#line 1492 "parser.c"
+#line 1494 "parser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1700,7 +1702,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 119 "parser.y"
+#line 121 "parser.y"
 
 void yyerror(char *s) {
 	fprintf(stderr, "%s\n", s);
