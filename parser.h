@@ -56,12 +56,12 @@
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union 
 /* Line 1676 of yacc.c  */
-#line 55 "parser.y"
+#line 28 "parser.y"
 SUPER_TYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 56 "parser.y"
+#line 29 "parser.y"
 
 	double dtype;
 	char* stype;

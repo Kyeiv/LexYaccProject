@@ -19,37 +19,10 @@
 	#include <stdlib.h>
 	#include <stdio.h>
 	#include <math.h>
-	//#include <string.h>
+	#include "variableNamesUtils.h"
 	void yyerror(char *s);
 	int yylex();
-	//int zmienne ['z' - 'a'];
 	extern FILE* yyin;
-	char* zmienneLiczbowe[1000];
-	int rozmiarZmienneLiczbowe = 0;
-
-	int czyBylo(char* wartosc)
-	{
-		for(int i = 0; i < rozmiarZmienneLiczbowe; i++)
-		{
-			char* currString = zmienneLiczbowe[i];
-			if(strcmp(currString,wartosc) == 0)
-			{
-				printf("ERROR \n");
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-	void handleNewVariableName(char* variableName)
-	{
-		if(czyBylo(variableName) == 0)
-		{
-			zmienneLiczbowe[rozmiarZmienneLiczbowe] = variableName;
-			printf("wartosc zmiennej: %s znakkonca \n", zmienneLiczbowe[rozmiarZmienneLiczbowe]);
-			rozmiarZmienneLiczbowe++;
-		}
-	}
 %}
 
 %union SUPER_TYPE
@@ -70,14 +43,15 @@
 %token <stype>BOOL
 %token <stype>NAZWA_ZMIENNEJ
 %token <stype>WARTOSC_STRING
+%type  <stype>typ_zmiennej_liczbowej
 %%
 program: program instrukcja '\n'		{ printf("dobre wyr c++ \n"); }
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
 	|
 	;
 wyrazenie: LICZBA {  }
-|	NAZWA_ZMIENNEJ
-|	wyrazenie'+'wyrazenie {  }
+|	NAZWA_ZMIENNEJ { handleVarNameInAssigning($1, 0); }
+|	wyrazenie'+'wyrazenie { }
 |	wyrazenie'-'wyrazenie { }
 |	wyrazenie'*'wyrazenie { }
 |	wyrazenie'/'wyrazenie { }
@@ -85,17 +59,31 @@ wyrazenie: LICZBA {  }
 ;
 
 instrukcja: deklaracja_zmiennej ';'
+| przypisanie ';'
 | instrukcja instrukcja
 ;
 
-deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ { char* value = yylval.stype; handleNewVariableName(value); 
-int i=5;}
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ { }
-| typ_zmiennej_logicznej NAZWA_ZMIENNEJ { }
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' WARTOSC_STRING { }
-| typ_zmiennej_liczbowej NAZWA_ZMIENNEJ '=' wyrazenie { }
-| typ_zmiennej_logicznej NAZWA_ZMIENNEJ '=' wartosc_bool { }
-| typ_zmiennej_logicznej NAZWA_ZMIENNEJ '=' wyrazenie { }
+deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ {handleNewVariableName($2, 0);}
+| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ  { handleNewVariableName($2, 1);}
+| typ_zmiennej_logicznej NAZWA_ZMIENNEJ { handleNewVariableName($2, 2); }
+| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' WARTOSC_STRING {handleNewVariableName($2, 1);}
+| typ_zmiennej_liczbowej NAZWA_ZMIENNEJ '=' wyrazenie {
+	handleNewVariableName($2, 0); 
+}
+| typ_zmiennej_logicznej NAZWA_ZMIENNEJ '=' wartosc_bool {
+	handleNewVariableName($2, 2); 
+}
+| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' NAZWA_ZMIENNEJ {
+	handleNewVariableName($2, 1); 
+	handleVarNameInAssigning($4, 1); 
+}
+;
+
+przypisanie:  NAZWA_ZMIENNEJ '=' WARTOSC_STRING { handleVarNameInAssigning($1, 1);  }
+/*|  NAZWA_ZMIENNEJ '=' NAZWA_ZMIENNEJ {validateTwoAssigningOperants($1, $3)} */
+|  NAZWA_ZMIENNEJ '=' wyrazenie { }
+|  NAZWA_ZMIENNEJ '=' wartosc_bool { }
+|  NAZWA_ZMIENNEJ
 ;
 
 typ_zmiennej_liczbowej:  DOUBLE
