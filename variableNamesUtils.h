@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 char* variablesNumerical[1000];
 int countVariablesNumerical = 0;
@@ -16,47 +17,53 @@ int countVariablesLogical = 0;
 char** variables;
 int* countVariables;
 
-const variableTypesNumber = 3;
 
-void setProperOperants(int type)
+enum Type
+{
+	NUMERICAL,
+	CHARACTERS,
+	LOGICAL
+};
+
+
+void setProperOperants(enum Type type)
 {
 	switch (type)
 	{
-	case 0:
+	case NUMERICAL:
 		variables = variablesNumerical;
 		countVariables = &countVariablesNumerical;
 		break;
-	case 1:
+	case CHARACTERS:
 		variables = variablesString;
 		countVariables = &countVariablesString;
 		break;
-	case 2:
+	case LOGICAL:
 		variables = variablesLogical;
 		countVariables = &countVariablesLogical;
 		break;
 	}
 }
 
-int variableExists(char* variableName)
+bool variableExists(char* variableName)
 {
 	for (int i = 0; i < *countVariables; i++)
 	{
 		char* currString = variables[i];
 		if (strcmp(currString, variableName) == 0)
 		{
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
-void handleNewVariableName(char* variableName, int type)
+void handleNewVariableName(char* variableName, enum Type type)
 {
-	int exists = 0;
-	for (int i = 0; i < variableTypesNumber; i++)
+	for (int i = 0; i != LOGICAL; ++i)
 	{
-		setProperOperants(i);
-		if(variableExists(variableName)==1)
+		setProperOperants((enum Type) i);
+		if(variableExists(variableName))
 		{
 			printf("ERROR: variable '%s' already exist! \n", variableName);
 			return;
@@ -68,10 +75,10 @@ void handleNewVariableName(char* variableName, int type)
 	*countVariables = *countVariables + 1;
 }
 
-void handleVarNameInAssigning(char* variableName, int type)
+void handleVarNameInAssigning(char* variableName, enum Type type)
 {
 	setProperOperants(type);
-	if (variableExists(variableName) == 0)
+	if (!variableExists(variableName))
 	{
 		printf("ERROR: variable '%s' of doesn't exist! \n", variableName);
 	}
@@ -82,23 +89,31 @@ void handleVarNameInAssigning(char* variableName, int type)
 }
 
 void validateTwoAssigningOperants(char* var1, char* var2) {
-	int var1Type = -1, var2Type = -1;
-	for (int i = 0; i < variableTypesNumber; i++) {
-		setProperOperants(i);
-		if (var1Type = -1 && variableExists(var1)) {
-			var1Type = i;
+
+	bool isExistsVar1 = false,
+		isExistsVar2 = false;
+	enum Type typeVar1,
+		typeVar2;
+
+	for (int i = 0; i != LOGICAL; ++i) {
+		setProperOperants((enum Type)i);
+		if (!isExistsVar1 && variableExists(var1)) {
+			isExistsVar1 = true;
+			typeVar1 = (enum Type) i;
 		}
-		if (var2Type = -1 && variableExists(var2)) {
-			var2Type = i;
+		if (!isExistsVar2 && variableExists(var2)) {
+			isExistsVar2 = true;
+			typeVar2 = (enum Type) i;
 		}
 	}
-	if (var1Type == -1) {
+	
+	if (!isExistsVar1) {
 		printf("ERRORc: Variable %s doesn't exist", var1);
 	}
-	if (var2Type == -1) {
+	if (!isExistsVar2) {
 		printf("ERRORc: Variable %s doesn't exist", var2);
 	}
-	if (var1Type != -1 && var2Type != -1 && var1Type != var2Type) {
+	if (isExistsVar1 && isExistsVar2 && typeVar1 != typeVar2) {
 		printf("ERRORc: Types missmatch!");
 	}
 }

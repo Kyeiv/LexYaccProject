@@ -50,7 +50,9 @@ program: program instrukcja '\n'		{ printf("dobre wyr c++ \n"); }
 	|
 	;
 wyrazenie: LICZBA {  }
-|	NAZWA_ZMIENNEJ { handleVarNameInAssigning($1, 0); }
+|	NAZWA_ZMIENNEJ { 
+	handleVarNameInAssigning($1, NUMERICAL); 
+}
 |	wyrazenie'+'wyrazenie { }
 |	wyrazenie'-'wyrazenie { }
 |	wyrazenie'*'wyrazenie { }
@@ -63,23 +65,33 @@ instrukcja: deklaracja_zmiennej ';'
 | instrukcja instrukcja
 ;
 
-deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ {handleNewVariableName($2, 0);}
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ  { handleNewVariableName($2, 1);}
-| typ_zmiennej_logicznej NAZWA_ZMIENNEJ { handleNewVariableName($2, 2); }
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' WARTOSC_STRING {handleNewVariableName($2, 1);}
+deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ {
+	handleNewVariableName($2, NUMERICAL);
+}
+| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ  { 
+	handleNewVariableName($2, CHARACTERS);
+}
+| typ_zmiennej_logicznej NAZWA_ZMIENNEJ { 
+	handleNewVariableName($2, LOGICAL);
+}
+| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' WARTOSC_STRING {
+	handleNewVariableName($2, CHARACTERS);
+}
 | typ_zmiennej_liczbowej NAZWA_ZMIENNEJ '=' wyrazenie {
-	handleNewVariableName($2, 0); 
+	handleNewVariableName($2, NUMERICAL); 
 }
 | typ_zmiennej_logicznej NAZWA_ZMIENNEJ '=' wartosc_bool {
-	handleNewVariableName($2, 2); 
+	handleNewVariableName($2, LOGICAL); 
 }
 | typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' NAZWA_ZMIENNEJ {
-	handleNewVariableName($2, 1); 
-	handleVarNameInAssigning($4, 1); 
+	handleNewVariableName($2, CHARACTERS); 
+	handleVarNameInAssigning($4, CHARACTERS);
 }
 ;
 
-przypisanie:  NAZWA_ZMIENNEJ '=' WARTOSC_STRING { handleVarNameInAssigning($1, 1);  }
+przypisanie:  NAZWA_ZMIENNEJ '=' WARTOSC_STRING { 
+handleVarNameInAssigning($1, CHARACTERS);  
+}
 /*|  NAZWA_ZMIENNEJ '=' NAZWA_ZMIENNEJ {validateTwoAssigningOperants($1, $3)} */
 |  NAZWA_ZMIENNEJ '=' wyrazenie { }
 |  NAZWA_ZMIENNEJ '=' wartosc_bool { }
