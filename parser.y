@@ -23,6 +23,8 @@
 %token <stype>FALSE
 %token <stype>INT
 %token <stype>BOOL
+%token <stype>IF
+%token <stype>ELSE
 %token <stype>SEMICOLON
 %token <stype>VARIABLE_NAME
 %token <stype>STRING_VALUE
@@ -45,10 +47,21 @@ expression: NUMBER {
 |
 ;
 
-instruction: variable_declaration
-| assigning
+instruction: single_instruction
 | instruction instruction
 ;
+
+single_instruction: if_instruction
+| block_of_code
+| variable_declaration
+| assigning
+;
+
+block_of_code: '{' instruction '}'
+;
+
+if_instruction: IF '(' comparison ')' single_instruction
+| IF '(' comparison ')' single_instruction ELSE single_instruction
 
 variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
 	handleNewVariableName($2, NUMERICAL);
@@ -70,6 +83,11 @@ variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
 }
 | logical_type_variable VARIABLE_NAME '=' bool_value SEMICOLON{
 	handleNewVariableName($2, LOGICAL); 
+}
+| logical_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON {
+	if (handleVarNameInAssigning($4, LOGICAL)) {
+		handleNewVariableName($2, LOGICAL); 
+	}
 }
 | characters_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON{
 	if (handleVarNameInAssigning($4, CHARACTERS)) {
@@ -94,6 +112,26 @@ assigning:  VARIABLE_NAME '=' STRING_VALUE SEMICOLON {
 	}
 }
 |  VARIABLE_NAME SEMICOLON {
+	variableExists($1);
+}
+;
+
+comparison:  VARIABLE_NAME'=''='STRING_VALUE { 
+	handleVarNameInAssigning($1, CHARACTERS);  
+}
+|  VARIABLE_NAME'=''='VARIABLE_NAME {
+	validateTwoAssigningOperants($1, $4)
+} 
+|  VARIABLE_NAME'=''='expression  {
+	variableNumericalTypeExists($1); //only 'int' type is allowed
+	isAssigned = false;
+}
+|  VARIABLE_NAME'=''='bool_value {
+	if (handleVarNameInAssigning($1, LOGICAL)) {
+		variableExists($1);
+	}
+}
+|  VARIABLE_NAME {
 	variableExists($1);
 }
 ;

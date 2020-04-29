@@ -46,9 +46,11 @@
      FALSE = 262,
      INT = 263,
      BOOL = 264,
-     SEMICOLON = 265,
-     VARIABLE_NAME = 266,
-     STRING_VALUE = 267
+     IF = 265,
+     ELSE = 266,
+     SEMICOLON = 267,
+     VARIABLE_NAME = 268,
+     STRING_VALUE = 269
    };
 #endif
 
@@ -70,7 +72,7 @@ SUPER_TYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 74 "parser.h"
+#line 76 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
