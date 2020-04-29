@@ -1,27 +1,12 @@
-
-/**************************************
-  IMPORTANT!
-  
-  Make sure the folder you have unzipped the files has NO WHITE CHARs in path!
-
-  Make sure your compiler knows where to find  
-  flex and yacc applications!
-  1. Right click on the name of your project in Solution Explorer.
-  2. Click Properties.
-  3. In Configuration Properties click VC++ Directories
-  4. In right window edit Executable Directories -- add the path
-     to folder /gnu/bin. 
-  5. That's all folks!
- 
-*/
-
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
 	#include <math.h>
+	#include <stdbool.h>
 	#include "variableNamesUtils.h"
 	void yyerror(char *s);
 	int yylex();
+	bool isAssigned = false;
 	extern FILE* yyin;
 %}
 
@@ -30,91 +15,107 @@
 	double dtype;
 	char* stype;
 }
-//%left '+' '='
-//%left '*' '/'
-//%right '^'
-//%left NEG
-%token <dtype>LICZBA
+
+%token <dtype>NUMBER
 %token <stype>DOUBLE
 %token <stype>STRING
 %token <stype>TRUE
 %token <stype>FALSE
 %token <stype>INT
 %token <stype>BOOL
-%token <stype>NAZWA_ZMIENNEJ
-%token <stype>WARTOSC_STRING
-%type  <stype>typ_zmiennej_liczbowej
+%token <stype>SEMICOLON
+%token <stype>VARIABLE_NAME
+%token <stype>STRING_VALUE
+
 %%
-program: program instrukcja '\n'		{ printf("dobre wyr c++ \n"); }
+program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
 	|
 	;
-wyrazenie: LICZBA {  }
-|	NAZWA_ZMIENNEJ { 
-	handleVarNameInAssigning($1, NUMERICAL); 
+expression: NUMBER { 
+	isAssigned = true;
 }
-|	wyrazenie'+'wyrazenie { }
-|	wyrazenie'-'wyrazenie { }
-|	wyrazenie'*'wyrazenie { }
-|	wyrazenie'/'wyrazenie { }
+|	VARIABLE_NAME { 
+	isAssigned = handleVarNameInAssigning($1, NUMERICAL); 
+}
+|	expression'+'expression { }
+|	expression'-'expression { }
+|	expression'*'expression { }
+|	expression'/'expression { }
 |
 ;
 
-instrukcja: deklaracja_zmiennej ';'
-| przypisanie ';'
-| instrukcja instrukcja
+instruction: variable_declaration
+| assigning
+| instruction instruction
 ;
 
-deklaracja_zmiennej: typ_zmiennej_liczbowej NAZWA_ZMIENNEJ {
+variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
 	handleNewVariableName($2, NUMERICAL);
 }
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ  { 
+| characters_type_variable VARIABLE_NAME SEMICOLON { 
 	handleNewVariableName($2, CHARACTERS);
 }
-| typ_zmiennej_logicznej NAZWA_ZMIENNEJ { 
+| logical_type_variable VARIABLE_NAME SEMICOLON { 
 	handleNewVariableName($2, LOGICAL);
 }
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' WARTOSC_STRING {
+| characters_type_variable VARIABLE_NAME '=' STRING_VALUE SEMICOLON{
 	handleNewVariableName($2, CHARACTERS);
 }
-| typ_zmiennej_liczbowej NAZWA_ZMIENNEJ '=' wyrazenie {
-	handleNewVariableName($2, NUMERICAL); 
+| numerical_type_variable VARIABLE_NAME '=' expression SEMICOLON {
+	if (isAssigned) {
+		handleNewVariableName($2, NUMERICAL); 
+	}
+	isAssigned = false;
 }
-| typ_zmiennej_logicznej NAZWA_ZMIENNEJ '=' wartosc_bool {
+| logical_type_variable VARIABLE_NAME '=' bool_value SEMICOLON{
 	handleNewVariableName($2, LOGICAL); 
 }
-| typ_zmiennej_lancuchowej NAZWA_ZMIENNEJ '=' NAZWA_ZMIENNEJ {
-	handleNewVariableName($2, CHARACTERS); 
-	handleVarNameInAssigning($4, CHARACTERS);
+| characters_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON{
+	if (handleVarNameInAssigning($4, CHARACTERS)) {
+		handleNewVariableName($2, CHARACTERS); 
+	}
 }
 ;
 
-przypisanie:  NAZWA_ZMIENNEJ '=' WARTOSC_STRING { 
-handleVarNameInAssigning($1, CHARACTERS);  
+assigning:  VARIABLE_NAME '=' STRING_VALUE SEMICOLON { 
+	handleVarNameInAssigning($1, CHARACTERS);  
 }
-/*|  NAZWA_ZMIENNEJ '=' NAZWA_ZMIENNEJ {validateTwoAssigningOperants($1, $3)} */
-|  NAZWA_ZMIENNEJ '=' wyrazenie { }
-|  NAZWA_ZMIENNEJ '=' wartosc_bool { }
-|  NAZWA_ZMIENNEJ
+|  VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON {
+	validateTwoAssigningOperants($1, $3)
+} 
+|  VARIABLE_NAME '=' expression SEMICOLON {
+	variableNumericalTypeExists($1); //only 'int' type is allowed
+	isAssigned = false;
+}
+|  VARIABLE_NAME '=' bool_value SEMICOLON {
+	if (handleVarNameInAssigning($1, LOGICAL)) {
+		variableExists($1);
+	}
+}
+|  VARIABLE_NAME SEMICOLON {
+	variableExists($1);
+}
 ;
 
-typ_zmiennej_liczbowej:  DOUBLE
+numerical_type_variable:  DOUBLE
 | INT
 ;
 
-typ_zmiennej_lancuchowej:  STRING
+characters_type_variable:  STRING
 ;
 
-wartosc_bool: TRUE
+logical_type_variable: BOOL;
+
+bool_value: TRUE
 | FALSE
 ;
 
-typ_zmiennej_logicznej: BOOL;
 
 /*
 TODO
-typ_zmiennej: typ_zmiennej_liczbowej
-| typ_zmiennej_lancuchowej
+typ_zmiennej: numerical_type_variable
+| characters_type_variable
 ;
 */
 

@@ -39,15 +39,16 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     LICZBA = 258,
+     NUMBER = 258,
      DOUBLE = 259,
      STRING = 260,
      TRUE = 261,
      FALSE = 262,
      INT = 263,
      BOOL = 264,
-     NAZWA_ZMIENNEJ = 265,
-     WARTOSC_STRING = 266
+     SEMICOLON = 265,
+     VARIABLE_NAME = 266,
+     STRING_VALUE = 267
    };
 #endif
 
@@ -56,12 +57,12 @@
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union 
 /* Line 1676 of yacc.c  */
-#line 28 "parser.y"
+#line 13 "parser.y"
 SUPER_TYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 29 "parser.y"
+#line 14 "parser.y"
 
 	double dtype;
 	char* stype;
@@ -69,7 +70,7 @@ SUPER_TYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 73 "parser.h"
+#line 74 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

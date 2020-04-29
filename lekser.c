@@ -286,15 +286,15 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 	*yy_cp = '\0'; \
 	yy_c_buf_p = yy_cp;
 
-#define YY_NUM_RULES 12
-#define YY_END_OF_BUFFER 13
-static yyconst short int yy_accept[43] =
+#define YY_NUM_RULES 13
+#define YY_END_OF_BUFFER 14
+static yyconst short int yy_accept[44] =
     {   0,
-        0,    0,   13,   12,   11,   12,   10,    8,    7,   10,
-       10,   10,   10,   10,   10,    0,    9,   10,    7,   10,
-       10,   10,   10,   10,   10,   10,   10,   10,    3,   10,
-       10,    4,   10,   10,   10,    5,   10,    6,   10,    1,
-        2,    0
+        0,    0,   14,   13,   12,   13,   11,    9,    8,    7,
+       11,   11,   11,   11,   11,   11,    0,   10,   11,    8,
+       11,   11,   11,   11,   11,   11,   11,   11,   11,    3,
+       11,   11,    4,   11,   11,   11,    5,   11,    6,   11,
+        1,    2,    0
     } ;
 
 static yyconst int yy_ec[256] =
@@ -304,14 +304,14 @@ static yyconst int yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    3,    1,    4,    1,    1,    1,    5,
         5,    5,    5,    1,    5,    1,    5,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    1,    5,    1,
+        6,    6,    6,    6,    6,    6,    6,    1,    7,    1,
         5,    1,    1,    1,    4,    4,    4,    4,    4,    4,
         4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
         4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
-        1,    1,    1,    5,    4,    1,    7,    8,    4,    9,
+        1,    1,    1,    5,    4,    1,    8,    9,    4,   10,
 
-       10,   11,   12,    4,   13,    4,    4,   14,    4,   15,
-       16,    4,    4,   17,   18,   19,   20,    4,    4,    4,
+       11,   12,   13,    4,   14,    4,    4,   15,    4,   16,
+       17,    4,    4,   18,   19,   20,   21,    4,    4,    4,
         4,    4,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -329,52 +329,53 @@ static yyconst int yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst int yy_meta[21] =
+static yyconst int yy_meta[22] =
     {   0,
-        1,    2,    1,    3,    1,    3,    3,    3,    3,    3,
-        3,    3,    3,    3,    3,    3,    3,    3,    3,    3
+        1,    2,    1,    3,    1,    3,    1,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3
     } ;
 
-static yyconst short int yy_base[45] =
+static yyconst short int yy_base[46] =
     {   0,
-        0,    0,   51,   52,   52,   47,    0,   52,   43,   32,
-       31,   39,   30,   25,   26,   39,   38,    0,   34,   23,
-       18,   23,   17,   18,   14,   19,   24,   13,    0,   17,
-       19,    0,   14,   17,   11,    0,   15,    0,   12,    0,
-        0,   52,   20,   19
+        0,    0,   52,   53,   53,   48,    0,   53,   44,   53,
+       32,   31,   39,   30,   25,   26,   40,   39,    0,   35,
+       23,   18,   23,   17,   18,   14,   19,   24,   13,    0,
+       17,   19,    0,   14,   17,   11,    0,   15,    0,   12,
+        0,    0,   53,   21,   20
     } ;
 
-static yyconst short int yy_def[45] =
+static yyconst short int yy_def[46] =
     {   0,
-       42,    1,   42,   42,   42,   43,   44,   42,   42,   44,
-       44,   44,   44,   44,   44,   43,   43,   44,   42,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-       44,    0,   42,   42
+       43,    1,   43,   43,   43,   44,   45,   43,   43,   43,
+       45,   45,   45,   45,   45,   45,   44,   44,   45,   43,
+       45,   45,   45,   45,   45,   45,   45,   45,   45,   45,
+       45,   45,   45,   45,   45,   45,   45,   45,   45,   45,
+       45,   45,    0,   43,   43
     } ;
 
-static yyconst short int yy_nxt[73] =
+static yyconst short int yy_nxt[75] =
     {   0,
-        4,    5,    6,    7,    8,    9,    7,   10,   11,    7,
-       12,    7,   13,    7,    7,    7,    7,   14,   15,    7,
-       16,   18,   16,   41,   40,   39,   38,   37,   36,   35,
-       34,   33,   32,   31,   30,   29,   28,   27,   26,   19,
-       17,   17,   25,   24,   23,   22,   21,   20,   19,   17,
-       42,    3,   42,   42,   42,   42,   42,   42,   42,   42,
-       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
-       42,   42
+        4,    5,    6,    7,    8,    9,   10,    7,   11,   12,
+        7,   13,    7,   14,    7,    7,    7,    7,   15,   16,
+        7,   17,   19,   17,   42,   41,   40,   39,   38,   37,
+       36,   35,   34,   33,   32,   31,   30,   29,   28,   27,
+       20,   18,   18,   26,   25,   24,   23,   22,   21,   20,
+       18,   43,    3,   43,   43,   43,   43,   43,   43,   43,
+       43,   43,   43,   43,   43,   43,   43,   43,   43,   43,
+       43,   43,   43,   43
     } ;
 
-static yyconst short int yy_chk[73] =
+static yyconst short int yy_chk[75] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-       43,   44,   43,   39,   37,   35,   34,   33,   31,   30,
-       28,   27,   26,   25,   24,   23,   22,   21,   20,   19,
-       17,   16,   15,   14,   13,   12,   11,   10,    9,    6,
-        3,   42,   42,   42,   42,   42,   42,   42,   42,   42,
-       42,   42,   42,   42,   42,   42,   42,   42,   42,   42,
-       42,   42
+        1,   44,   45,   44,   40,   38,   36,   35,   34,   32,
+       31,   29,   28,   27,   26,   25,   24,   23,   22,   21,
+       20,   18,   17,   16,   15,   14,   13,   12,   11,    9,
+        6,    3,   43,   43,   43,   43,   43,   43,   43,   43,
+       43,   43,   43,   43,   43,   43,   43,   43,   43,   43,
+       43,   43,   43,   43
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -390,31 +391,10 @@ static char *yy_last_accepting_cpos;
 char *yytext;
 #line 1 "lekser.l"
 #define INITIAL 0
-/**************************************
-  IMPORTANT!
-  
-  Make sure the folder you have unzipped the files has NO WHITE CHARs in path!
-
-  Make sure your compiler knows where to find 
-  flex and yacc applications!
-  1. Right click on the name of your project in Solution Explorer.
-  2. Click Properties.
-  3. In Configuration Properties click VC++ Directories
-  4. In right window edit Executable Directories -- add the path
-     to folder /gnu/bin. 
-  5. That's all folks!
-
-  zmienna = typ nazwa_zmiennej
-
-	typ = "char" "int"
-	nazwa zmiennej = regexp
-	^[a-zA-Z_$][a-zA-Z_$0-9]*$
- 
-*/
-#line 28 "lekser.l"
+#line 4 "lekser.l"
 	#include <stdlib.h> 
 	#include "parser.h"
-#line 418 "lekser.c"
+#line 398 "lekser.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -565,9 +545,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 31 "lekser.l"
+#line 7 "lekser.l"
 
-#line 571 "lekser.c"
+#line 551 "lekser.c"
 
 	if ( yy_init )
 		{
@@ -618,13 +598,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 43 )
+				if ( yy_current_state >= 44 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 52 );
+		while ( yy_base[yy_current_state] != 53 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -652,65 +632,70 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 32 "lekser.l"
+#line 8 "lekser.l"
 { return DOUBLE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 33 "lekser.l"
+#line 9 "lekser.l"
 { return STRING; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 34 "lekser.l"
+#line 10 "lekser.l"
 { return INT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "lekser.l"
+#line 11 "lekser.l"
 { return BOOL; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 36 "lekser.l"
+#line 12 "lekser.l"
 { return TRUE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 37 "lekser.l"
+#line 13 "lekser.l"
 { return FALSE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 38 "lekser.l"
-{ yylval.dtype = atoi(yytext); return LICZBA; }
+#line 15 "lekser.l"
+{yylval.stype = yytext[0]; return SEMICOLON; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 39 "lekser.l"
-return yytext[0];
+#line 16 "lekser.l"
+{ yylval.dtype = atoi(yytext); return NUMBER; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 40 "lekser.l"
-{ yylval.stype = yytext[0]; return WARTOSC_STRING; }
+#line 17 "lekser.l"
+return yytext[0];
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 41 "lekser.l"
-{ yylval.stype=strdup(yytext); return NAZWA_ZMIENNEJ; }
+#line 18 "lekser.l"
+{ yylval.stype = yytext[0]; return STRING_VALUE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 42 "lekser.l"
-return '\n';
+#line 19 "lekser.l"
+{ yylval.stype=strdup(yytext); return VARIABLE_NAME; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 43 "lekser.l"
+#line 20 "lekser.l"
+return '\n';
+	YY_BREAK
+case 13:
+YY_RULE_SETUP
+#line 21 "lekser.l"
 ECHO;
 	YY_BREAK
-#line 714 "lekser.c"
+#line 699 "lekser.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1002,7 +987,7 @@ static yy_state_type yy_get_previous_state()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 43 )
+			if ( yy_current_state >= 44 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1037,11 +1022,11 @@ yy_state_type yy_current_state;
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 43 )
+		if ( yy_current_state >= 44 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 42);
+	yy_is_jam = (yy_current_state == 43);
 
 	return yy_is_jam ? 0 : yy_current_state;
 	}
@@ -1596,4 +1581,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 43 "lekser.l"
+#line 21 "lekser.l"
