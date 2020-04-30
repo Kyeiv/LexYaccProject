@@ -173,6 +173,7 @@ comparison:  VARIABLE_NAME'=''='STRING_VALUE {
 |  VARIABLE_NAME {
 	nameExistsInOrigin($1, VAR);
 }
+| bool_value
 ;
 
 numerical_type_variable:  DOUBLE
