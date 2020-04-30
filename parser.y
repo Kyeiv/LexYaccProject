@@ -76,12 +76,6 @@ function_variables: variable_declaration
 
 if_instruction: IF '(' comparison ')' single_instruction
 | IF '(' comparison ')' single_instruction ELSE single_instruction
-|  IF '(' comparison ')' single_instruction else_if single_instruction
-|  IF '(' comparison ')' single_instruction else_if single_instruction ELSE single_instruction
-
-else_if:
-ELSE IF  '(' comparison ')' 
-;
 
 variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
 	handleNewName($2, NUMERICAL, VAR);
