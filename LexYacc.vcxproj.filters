@@ -26,10 +26,10 @@
     <ClInclude Include="parser.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="variableNamesUtils.h">
+    <ClInclude Include="Type.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Type.h">
+    <ClInclude Include="nameTablesUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

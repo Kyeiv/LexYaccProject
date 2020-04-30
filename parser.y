@@ -3,7 +3,7 @@
 	#include <stdio.h>
 	#include <math.h>
 	#include <stdbool.h>
-	#include "variableNamesUtils.h"
+	#include "nameTablesUtils.h"
 	void yyerror(char *s);
 	int yylex();
 	bool isAssigned = false;
@@ -38,7 +38,7 @@ expression: NUMBER {
 	isAssigned = true;
 }
 |	VARIABLE_NAME { 
-	isAssigned = handleVarNameInAssigning($1, NUMERICAL); 
+	isAssigned = handleNameInAssigning($1, NUMERICAL, VAR); 
 }
 |	expression'+'expression { }
 |	expression'-'expression { }
@@ -55,84 +55,97 @@ single_instruction: if_instruction
 | block_of_code
 | variable_declaration
 | assigning
+| function
 ;
 
 block_of_code: '{' instruction '}'
+;
+
+function: numerical_type_variable function_name '(' function_variables ')' block_of_code { printf("numerical func \n"); }
+| characters_type_variable function_name '(' function_variables ')' block_of_code { printf("numerical func \n"); }
+| logical_type_variable function_name '(' function_variables ')' block_of_code { printf("numerical func \n"); }
+;
+
+function_name: VARIABLE_NAME
+;
+
+function_variables: variable_declaration
+| function_variables ',' function_variables
 ;
 
 if_instruction: IF '(' comparison ')' single_instruction
 | IF '(' comparison ')' single_instruction ELSE single_instruction
 
 variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
-	handleNewVariableName($2, NUMERICAL);
+	handleNewName($2, NUMERICAL, VAR);
 }
 | characters_type_variable VARIABLE_NAME SEMICOLON { 
-	handleNewVariableName($2, CHARACTERS);
+	handleNewName($2, CHARACTERS, VAR);
 }
 | logical_type_variable VARIABLE_NAME SEMICOLON { 
-	handleNewVariableName($2, LOGICAL);
+	handleNewName($2, LOGICAL, VAR);
 }
 | characters_type_variable VARIABLE_NAME '=' STRING_VALUE SEMICOLON{
-	handleNewVariableName($2, CHARACTERS);
+	handleNewName($2, CHARACTERS, VAR);
 }
 | numerical_type_variable VARIABLE_NAME '=' expression SEMICOLON {
 	if (isAssigned) {
-		handleNewVariableName($2, NUMERICAL); 
+		handleNewName($2, NUMERICAL, VAR); 
 	}
 	isAssigned = false;
 }
 | logical_type_variable VARIABLE_NAME '=' bool_value SEMICOLON{
-	handleNewVariableName($2, LOGICAL); 
+	handleNewName($2, LOGICAL, VAR); 
 }
 | logical_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON {
-	if (handleVarNameInAssigning($4, LOGICAL)) {
-		handleNewVariableName($2, LOGICAL); 
+	if (handleNameInAssigning($4, LOGICAL, VAR)) {
+		handleNewName($2, LOGICAL, VAR); 
 	}
 }
 | characters_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON{
-	if (handleVarNameInAssigning($4, CHARACTERS)) {
-		handleNewVariableName($2, CHARACTERS); 
+	if (handleNameInAssigning($4, CHARACTERS, VAR)) {
+		handleNewName($2, CHARACTERS, VAR); 
 	}
 }
 ;
 
 assigning:  VARIABLE_NAME '=' STRING_VALUE SEMICOLON { 
-	handleVarNameInAssigning($1, CHARACTERS);  
+	handleNameInAssigning($1, CHARACTERS, VAR);  
 }
 |  VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON {
-	validateTwoAssigningOperants($1, $3)
+	validateTwoAssigningOperants($1, $3, VAR)
 } 
 |  VARIABLE_NAME '=' expression SEMICOLON {
-	variableNumericalTypeExists($1); //only 'int' type is allowed
+	nameInNumericalTypeExists($1, VAR); //only 'int' type is allowed
 	isAssigned = false;
 }
 |  VARIABLE_NAME '=' bool_value SEMICOLON {
-	if (handleVarNameInAssigning($1, LOGICAL)) {
-		variableExists($1);
+	if (handleNameInAssigning($1, LOGICAL, VAR)) {
+		nameExistsInOrigin($1, VAR);
 	}
 }
 |  VARIABLE_NAME SEMICOLON {
-	variableExists($1);
+	nameExistsInOrigin($1, VAR);
 }
 ;
 
 comparison:  VARIABLE_NAME'=''='STRING_VALUE { 
-	handleVarNameInAssigning($1, CHARACTERS);  
+	handleNameInAssigning($1, CHARACTERS, VAR);  
 }
 |  VARIABLE_NAME'=''='VARIABLE_NAME {
-	validateTwoAssigningOperants($1, $4)
+	validateTwoAssigningOperants($1, $4, VAR)
 } 
 |  VARIABLE_NAME'=''='expression  {
-	variableNumericalTypeExists($1); //only 'int' type is allowed
+	nameInNumericalTypeExists($1, VAR); //only 'int' type is allowed
 	isAssigned = false;
 }
 |  VARIABLE_NAME'=''='bool_value {
-	if (handleVarNameInAssigning($1, LOGICAL)) {
-		variableExists($1);
+	if (handleNameInAssigning($1, LOGICAL, VAR)) {
+		nameExistsInOrigin($1, VAR);
 	}
 }
 |  VARIABLE_NAME {
-	variableExists($1);
+	nameExistsInOrigin($1, VAR);
 }
 ;
 
