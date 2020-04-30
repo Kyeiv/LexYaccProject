@@ -13,6 +13,8 @@ true { return TRUE; }
 false { return FALSE; }
 if { return IF; }
 else { return ELSE; }
+void { return VOID; }
+return { return RETURN; }
 
 [;] {yylval.stype = yytext[0]; return SEMICOLON; }
 [0-9]+	{ yylval.dtype = atoi(yytext); return NUMBER; }

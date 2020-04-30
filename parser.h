@@ -41,16 +41,18 @@
    enum yytokentype {
      NUMBER = 258,
      DOUBLE = 259,
-     STRING = 260,
-     TRUE = 261,
-     FALSE = 262,
-     INT = 263,
-     BOOL = 264,
-     IF = 265,
-     ELSE = 266,
-     SEMICOLON = 267,
-     VARIABLE_NAME = 268,
-     STRING_VALUE = 269
+     VOID = 260,
+     STRING = 261,
+     TRUE = 262,
+     FALSE = 263,
+     INT = 264,
+     BOOL = 265,
+     IF = 266,
+     ELSE = 267,
+     SEMICOLON = 268,
+     VARIABLE_NAME = 269,
+     STRING_VALUE = 270,
+     RETURN = 271
    };
 #endif
 
@@ -72,7 +74,7 @@ SUPER_TYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 76 "parser.h"
+#line 78 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

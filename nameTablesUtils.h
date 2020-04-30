@@ -24,6 +24,15 @@ int countFunctionsString = 0;
 char* functionsLogical[1000];
 int countFunctionsLogical = 0;
 
+char* functionsVoid[1000];
+int countFunctionsVoid = 0;
+
+char* namesErr[1000];
+int countNamesErr = 0;
+
+bool wasReturnStatement = false;
+enum Type lastFunctionType = NONE;
+
 char** names;
 int* countNames;
 
@@ -45,6 +54,11 @@ void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 			names = variablesLogical;
 			countNames = &countVariablesLogical;
 			break;
+		case VOIDD:
+			names = namesErr;
+			countNames = &countNamesErr;
+			printf("DEV ERROR: setProperOperants: do not use 'void' with variables! \n");
+			break;
 		}
 	}
 	else if (nameOrigin == FUNC) {
@@ -61,6 +75,10 @@ void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 		case LOGICAL:
 			names = functionsLogical;
 			countNames = &countFunctionsLogical;
+			break;
+		case VOIDD:
+			names = functionsVoid;
+			countNames = &countFunctionsVoid;
 			break;
 		}
 	}
@@ -87,7 +105,13 @@ bool nameInTypeExists(char* variableName)
 
 void handleNewName(char* variableName, enum Type type, enum NameOrigin nameOrigin)
 {
-	for (int i = 0; i <= LOGICAL; i++)
+	int max_search_count = VOIDD;
+
+	if (type == VAR) {
+		max_search_count = LOGICAL;
+	}
+
+	for (int i = 0; i <= max_search_count; i++)
 	{
 		setProperOperants((enum Type) i, nameOrigin);
 		if(nameInTypeExists(variableName))
@@ -170,4 +194,41 @@ void validateTwoAssigningOperants(char* var1, char* var2, enum NameOrigin nameOr
 	if (isExistsVar1 && isExistsVar2 && typeVar1 != typeVar2) {
 		printf("ERRORc: Types missmatch! Cannot assigned '%s' to '%s' \n", getTypeName(typeVar1), getTypeName(typeVar2));
 	}
+}
+
+void setLastFunctionType(enum Type type)
+{
+	lastFunctionType = type;
+}
+
+void validateReturn(enum Type type)
+{
+	if (lastFunctionType == NONE) {
+		printf("ERROR: Cannot return without function! \n");
+		return;
+	}
+
+	if (type != lastFunctionType) {
+		printf("ERROR: Types missmatch! Cannot return %s in %s function \n", getTypeName(type), getTypeName(lastFunctionType));
+	}
+	else {
+		wasReturnStatement = true;
+	}
+}
+
+void validateEndOfFunction()
+{
+	switch (lastFunctionType)
+	{
+	case NUMERICAL:
+	case CHARACTERS:
+	case LOGICAL:
+		if (!wasReturnStatement) {
+			printf("ERROR: No return statement at the end of %s function! \n", getTypeName(lastFunctionType));
+		}
+		break;
+	}
+	
+	wasReturnStatement = false;
+	lastFunctionType = NONE;
 }

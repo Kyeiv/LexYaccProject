@@ -3,7 +3,9 @@ enum Type
 {
 	NUMERICAL,
 	CHARACTERS,
-	LOGICAL
+	LOGICAL,
+	VOIDD,
+	NONE
 };
 
 enum NameOrigin
@@ -19,6 +21,7 @@ char* getTypeName(enum Type type) {
 		case NUMERICAL: return "int";
 		case CHARACTERS: return "string";
 		case LOGICAL: return "bool";
+		case VOIDD: return "void";
 	}
 }
 

@@ -18,6 +18,7 @@
 
 %token <dtype>NUMBER
 %token <stype>DOUBLE
+%token <stype>VOID
 %token <stype>STRING
 %token <stype>TRUE
 %token <stype>FALSE
@@ -28,7 +29,8 @@
 %token <stype>SEMICOLON
 %token <stype>VARIABLE_NAME
 %token <stype>STRING_VALUE
-
+%token <stype>RETURN
+%type<stype> function_name
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
@@ -56,14 +58,29 @@ single_instruction: if_instruction
 | variable_declaration
 | assigning
 | function
+| return_statement
 ;
 
 block_of_code: '{' instruction '}'
 ;
 
-function: numerical_type_variable function_name '(' function_variables ')' block_of_code { printf("numerical func \n"); }
-| characters_type_variable function_name '(' function_variables ')' block_of_code { printf("numerical func \n"); }
-| logical_type_variable function_name '(' function_variables ')' block_of_code { printf("numerical func \n"); }
+function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); } '(' function_variables ')' block_of_code { 
+	printf("numerical func \n"); 
+	validateEndOfFunction();
+	handleNewName($2, NUMERICAL, FUNC);
+}
+| characters_type_variable  function_name { printf("stringFuncBEg \n"); setLastFunctionType(CHARACTERS); } '(' function_variables ')' block_of_code { 
+	printf("string func \n"); 
+	handleNewName($2, CHARACTERS, FUNC);
+}
+| logical_type_variable  function_name { printf("boolFuncBEg \n"); setLastFunctionType(LOGICAL); } '(' function_variables ')' block_of_code { 
+	printf("bool func \n"); 
+	handleNewName($2, LOGICAL, FUNC);
+}
+| void_type function_name { printf("voidFuncBEg \n"); setLastFunctionType(VOIDD); } '(' function_variables ')' block_of_code{
+	printf("void func \n"); 
+	handleNewName($2, VOIDD, FUNC);
+}
 ;
 
 function_name: VARIABLE_NAME
@@ -73,8 +90,17 @@ function_variables: variable_declaration
 | function_variables ',' function_variables
 ;
 
+return_statement: RETURN SEMICOLON { validateReturn(VOIDD) }
+| RETURN NUMBER SEMICOLON { validateReturn(NUMERICAL) }
+| RETURN bool_value SEMICOLON { validateReturn(BOOL) }
+| RETURN STRING_VALUE SEMICOLON { validateReturn(CHARACTERS) }
+| 
+;
+
+
 if_instruction: IF '(' comparison ')' single_instruction
 | IF '(' comparison ')' single_instruction ELSE single_instruction
+;
 
 variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
 	handleNewName($2, NUMERICAL, VAR);
@@ -157,6 +183,8 @@ characters_type_variable:  STRING
 ;
 
 logical_type_variable: BOOL;
+
+void_type: VOID;
 
 bool_value: TRUE
 | FALSE
