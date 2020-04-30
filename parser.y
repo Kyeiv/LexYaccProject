@@ -56,6 +56,7 @@ single_instruction: if_instruction
 | variable_declaration
 | assigning
 | function
+|
 ;
 
 block_of_code: '{' instruction '}'
@@ -75,6 +76,12 @@ function_variables: variable_declaration
 
 if_instruction: IF '(' comparison ')' single_instruction
 | IF '(' comparison ')' single_instruction ELSE single_instruction
+|  IF '(' comparison ')' single_instruction else_if single_instruction
+|  IF '(' comparison ')' single_instruction else_if single_instruction ELSE single_instruction
+
+else_if:
+ELSE IF  '(' comparison ')' 
+;
 
 variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
 	handleNewName($2, NUMERICAL, VAR);
@@ -147,6 +154,7 @@ comparison:  VARIABLE_NAME'=''='STRING_VALUE {
 |  VARIABLE_NAME {
 	nameExistsInOrigin($1, VAR);
 }
+| bool_value
 ;
 
 numerical_type_variable:  DOUBLE
