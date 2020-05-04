@@ -52,7 +52,8 @@
      SEMICOLON = 268,
      VARIABLE_NAME = 269,
      STRING_VALUE = 270,
-     RETURN = 271
+     RETURN = 271,
+     FOR = 272
    };
 #endif
 
@@ -74,7 +75,7 @@ SUPER_TYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 78 "parser.h"
+#line 79 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

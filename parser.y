@@ -30,6 +30,7 @@
 %token <stype>VARIABLE_NAME
 %token <stype>STRING_VALUE
 %token <stype>RETURN
+%token <stype>FOR
 %type<stype> function_name
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
@@ -59,6 +60,7 @@ single_instruction: if_instruction
 | assigning SEMICOLON
 | function
 | return_statement
+| for_statement
 ;
 
 block_of_code: {	
@@ -90,7 +92,8 @@ function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setL
 
 function_name: VARIABLE_NAME {
 	//printf("variable_declaration!!!\n"); 
-	setLocalVariableFlag();}
+	setLocalVariableFlag();
+	}
 ;
 
 function_variables: variable_declaration
@@ -109,6 +112,38 @@ return_statement: RETURN SEMICOLON { validateReturn(VOIDD) }
 if_instruction: IF '(' comparison ')' single_instruction
 | IF '(' comparison ')'single_instruction ELSE single_instruction
 ;
+
+for_statement: FOR '(' { 
+	//printf ("for statement \n"); 
+	setLocalVariableFlag();
+	}
+	for_first_arg SEMICOLON for_second_arg SEMICOLON for_third_arg ')' block_of_code
+
+
+for_first_arg: function_variables 
+| assigning
+| for_first_arg ',' for_first_arg
+|;
+
+for_second_arg: expression op expression
+| expression op expression ',' expression op expression
+|;
+
+op: '>'
+| '<'
+| '!''='
+| '<''='
+| '>''=';
+
+for_third_arg: VARIABLE_NAME increase_decrease
+| increase_decrease VARIABLE_NAME
+| for_third_arg ',' for_third_arg
+| assigning
+|
+;
+
+ increase_decrease: '+''+'
+ | '-''-';
 
 variable_declaration: numerical_type_variable VARIABLE_NAME {
 	handleNewName($2, NUMERICAL, VAR);
