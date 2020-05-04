@@ -55,15 +55,21 @@ instruction: single_instruction
 
 single_instruction: if_instruction
 | block_of_code
-| variable_declaration
-| assigning
+| variable_declaration SEMICOLON
+| assigning SEMICOLON
 | function
 | return_statement
 ;
 
-block_of_code: '{' instruction '}'
+block_of_code: {	
+	//printf ("setFlagLocalVariable \n"); 
+	setLocalVariableFlag();
+} '{' instruction '}' {
+	//printf ("endedBlockOfCode \n"); 
+	endedBlockOfCode();
+}
 ;
-
+for
 function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); } '(' function_variables ')' block_of_code { 
 	printf("numerical func \n"); 
 	validateEndOfFunction();
@@ -83,11 +89,14 @@ function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setL
 }
 ;
 
-function_name: VARIABLE_NAME
+function_name: VARIABLE_NAME {
+	//printf("variable_declaration!!!\n"); 
+	setLocalVariableFlag();}
 ;
 
 function_variables: variable_declaration
 | function_variables ',' function_variables
+|
 ;
 
 return_statement: RETURN SEMICOLON { validateReturn(VOIDD) }
@@ -99,64 +108,64 @@ return_statement: RETURN SEMICOLON { validateReturn(VOIDD) }
 
 
 if_instruction: IF '(' comparison ')' single_instruction
-| IF '(' comparison ')' single_instruction ELSE single_instruction
+| IF '(' comparison ')'single_instruction ELSE single_instruction
 ;
 
-variable_declaration: numerical_type_variable VARIABLE_NAME SEMICOLON{
+variable_declaration: numerical_type_variable VARIABLE_NAME {
 	handleNewName($2, NUMERICAL, VAR);
 }
-| characters_type_variable VARIABLE_NAME SEMICOLON { 
+| characters_type_variable VARIABLE_NAME { 
 	handleNewName($2, CHARACTERS, VAR);
 }
-| logical_type_variable VARIABLE_NAME SEMICOLON { 
+| logical_type_variable VARIABLE_NAME { 
 	handleNewName($2, LOGICAL, VAR);
 }
-| characters_type_variable VARIABLE_NAME '=' STRING_VALUE SEMICOLON{
+| characters_type_variable VARIABLE_NAME '=' STRING_VALUE {
 	handleNewName($2, CHARACTERS, VAR);
 }
-| numerical_type_variable VARIABLE_NAME '=' expression SEMICOLON {
+| numerical_type_variable VARIABLE_NAME '=' expression {
 	if (isAssigned) {
 		handleNewName($2, NUMERICAL, VAR); 
 	}
 	isAssigned = false;
 }
-| logical_type_variable VARIABLE_NAME '=' bool_value SEMICOLON{
+| logical_type_variable VARIABLE_NAME '=' bool_value {
 	handleNewName($2, LOGICAL, VAR); 
 }
-| logical_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON {
+| logical_type_variable VARIABLE_NAME '=' VARIABLE_NAME {
 	if (handleNameInAssigning($4, LOGICAL, VAR)) {
 		handleNewName($2, LOGICAL, VAR); 
 	}
 }
-| characters_type_variable VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON{
+| characters_type_variable VARIABLE_NAME '=' VARIABLE_NAME {
 	if (handleNameInAssigning($4, CHARACTERS, VAR)) {
 		handleNewName($2, CHARACTERS, VAR); 
 	}
 }
 ;
 
-assigning:  VARIABLE_NAME '=' STRING_VALUE SEMICOLON { 
+assigning:  VARIABLE_NAME '=' STRING_VALUE { 
 	handleNameInAssigning($1, CHARACTERS, VAR);  
 }
-|  VARIABLE_NAME '=' VARIABLE_NAME SEMICOLON {
+|  VARIABLE_NAME '=' VARIABLE_NAME {
 	validateTwoAssigningOperants($1, $3, VAR)
 } 
-|  VARIABLE_NAME '=' expression SEMICOLON {
+|  VARIABLE_NAME '=' expression {
 	nameInNumericalTypeExists($1, VAR); //only 'int' type is allowed
 	isAssigned = false;
 }
-|  VARIABLE_NAME '=' bool_value SEMICOLON {
+|  VARIABLE_NAME '=' bool_value {
 	if (handleNameInAssigning($1, LOGICAL, VAR)) {
 		nameExistsInOrigin($1, VAR);
 	}
 }
-|  VARIABLE_NAME SEMICOLON {
+|  VARIABLE_NAME {
 	nameExistsInOrigin($1, VAR);
 }
 ;
 
 comparison:  VARIABLE_NAME'=''='STRING_VALUE { 
-	handleNameInAssigning($1, CHARACTERS, VAR);  
+	handleNameInAssigning($1, CHARACTERS, VAR);
 }
 |  VARIABLE_NAME'=''='VARIABLE_NAME {
 	validateTwoAssigningOperants($1, $4, VAR)

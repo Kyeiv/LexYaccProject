@@ -36,6 +36,10 @@ enum Type lastFunctionType = NONE;
 char** names;
 int* countNames;
 
+bool isLocalVariable = false;
+int countVariablesStringToRemove = 0;
+int countVariablesNumericalToRemove = 0;
+int countVariablesLogicalToRemove = 0;
 
 void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 {
@@ -87,11 +91,13 @@ void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 	}
 
 }
+
 /*
 	check in a one type if variable exists --==!! needing setProperOperants first !!==--
 */
 bool nameInTypeExists(char* variableName)
 {
+
 	for (int i = 0; i < *countNames; i++)
 	{
 		char* currString = names[i];
@@ -103,11 +109,29 @@ bool nameInTypeExists(char* variableName)
 	return false;
 }
 
+void addLocalVariableToRemove(enum Type type) {
+	switch (type)
+	{
+	case NUMERICAL:
+		countVariablesNumericalToRemove++;
+		break;
+	case CHARACTERS:
+		countVariablesStringToRemove++;
+		break;
+	case LOGICAL:
+		countVariablesLogicalToRemove++;
+		break;
+	}
+}
+
 void handleNewName(char* variableName, enum Type type, enum NameOrigin nameOrigin)
 {
+	if (isLocalVariable) {
+		addLocalVariableToRemove(type);
+	}
 	int max_search_count = VOIDD;
 
-	if (type == VAR) {
+	if (nameOrigin == VAR) {
 		max_search_count = LOGICAL;
 	}
 
@@ -124,6 +148,7 @@ void handleNewName(char* variableName, enum Type type, enum NameOrigin nameOrigi
 	names[*countNames] = variableName;
 	printf("%s name: %s \n", getNameOriginString(nameOrigin), names[*countNames]);
 	*countNames = *countNames + 1;
+
 }
 
 bool handleNameInAssigning(char* variableName, enum Type type, enum NameOrigin nameOrigin)
@@ -231,4 +256,42 @@ void validateEndOfFunction()
 	
 	wasReturnStatement = false;
 	lastFunctionType = NONE;
+}
+
+
+
+void setLocalVariableFlag() {
+	isLocalVariable = true;
+}
+
+void resetLocalValues() {
+
+	countVariablesStringToRemove = 0;
+	countVariablesNumericalToRemove = 0;
+	countVariablesLogicalToRemove = 0;
+}
+
+void removeLocalVariable() {
+	for (int i = 0; i <= LOGICAL; i++) {
+
+		setProperOperants((enum Type)i, VAR);
+		switch ((enum Type)i)
+		{
+		case NUMERICAL:
+			countVariablesNumerical = countVariablesNumerical - countVariablesNumericalToRemove;
+			break;
+		case CHARACTERS:
+			countVariablesString = countVariablesString - countVariablesStringToRemove;
+			break;
+		case LOGICAL:
+			countVariablesLogical = countVariablesLogical - countVariablesLogicalToRemove;
+			break;
+		}
+	}
+}
+void endedBlockOfCode() {
+
+	removeLocalVariable();
+	isLocalVariable = false;
+	resetLocalValues();
 }
