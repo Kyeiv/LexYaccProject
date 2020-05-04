@@ -69,7 +69,6 @@ block_of_code: {
 	endedBlockOfCode();
 }
 ;
-for
 function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); } '(' function_variables ')' block_of_code { 
 	printf("numerical func \n"); 
 	validateEndOfFunction();
