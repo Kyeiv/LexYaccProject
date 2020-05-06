@@ -59,7 +59,7 @@ single_instruction: if_instruction
 | variable_declaration SEMICOLON
 | assigning SEMICOLON
 | function
-| return_statement
+| return_statement SEMICOLON
 | for_statement
 ;
 
@@ -101,11 +101,11 @@ function_variables: variable_declaration
 |
 ;
 
-return_statement: RETURN SEMICOLON { validateReturn(VOIDD) }
-| RETURN NUMBER SEMICOLON { validateReturn(NUMERICAL) }
-| RETURN bool_value SEMICOLON { validateReturn(BOOL) }
-| RETURN STRING_VALUE SEMICOLON { validateReturn(CHARACTERS) }
-| RETURN VARIABLE_NAME SEMICOLON { validateReturnWithVarName($2) }
+return_statement: RETURN { validateReturn(VOIDD) }
+| RETURN NUMBER { validateReturn(NUMERICAL) }
+| RETURN bool_value { validateReturn(LOGICAL) }
+| RETURN STRING_VALUE { validateReturn(CHARACTERS) }
+| RETURN VARIABLE_NAME { validateReturnWithVarName($2) }
 | 
 ;
 
