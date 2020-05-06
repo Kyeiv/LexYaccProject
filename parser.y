@@ -105,6 +105,7 @@ return_statement: RETURN SEMICOLON { validateReturn(VOIDD) }
 | RETURN NUMBER SEMICOLON { validateReturn(NUMERICAL) }
 | RETURN bool_value SEMICOLON { validateReturn(BOOL) }
 | RETURN STRING_VALUE SEMICOLON { validateReturn(CHARACTERS) }
+| RETURN VARIABLE_NAME SEMICOLON { validateReturnWithVarName($2) }
 | 
 ;
 

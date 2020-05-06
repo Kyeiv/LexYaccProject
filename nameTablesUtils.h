@@ -167,16 +167,17 @@ bool handleNameInAssigning(char* variableName, enum Type type, enum NameOrigin n
 /*
 	check in all types if variable exists
 */
-void nameExistsInOrigin(char* variable, enum NameOrigin nameOrigin) {
+bool nameExistsInOrigin(char* variable, enum NameOrigin nameOrigin) {
 
 	for (int i = 0; i <= LOGICAL; i++) {
 
 		setProperOperants((enum Type) i, nameOrigin);
 		if (nameInTypeExists(variable)) {
-			return;
+			return true;
 		}
 	}
 	printf("ERROR: %s '%s' doesn't exist \n", getNameOriginString(nameOrigin), variable);
+	return false;
 }
 
 /*
@@ -239,6 +240,31 @@ void validateReturn(enum Type type)
 	else {
 		wasReturnStatement = true;
 	}
+}
+
+void validateReturnWithVarName(char* varName)
+{
+	enum Type type = getVarTypeFromName(varName);
+	if (type == NONE)
+	{
+		printf("ERROR: no previous declaration of return variable '%s' \n", varName);
+	}
+	else
+	{
+		validateReturn(type);
+	}
+}
+
+enum Type getVarTypeFromName(char* varName)
+{
+	for (int i = 0; i <= LOGICAL; i++) {
+
+		setProperOperants((enum Type) i, VAR);
+		if (nameInTypeExists(varName)) {
+			return (enum Type) i;
+		}
+	}
+	return NONE;
 }
 
 void validateEndOfFunction()
