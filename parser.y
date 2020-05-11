@@ -31,6 +31,8 @@
 %token <stype>STRING_VALUE
 %token <stype>RETURN
 %token <stype>FOR
+%token <stype>CLASS_DECL
+%token <stype>VISIBILITY
 %type<stype> function_name
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
@@ -61,6 +63,8 @@ single_instruction: if_instruction
 | function
 | return_statement SEMICOLON
 | for_statement
+| class_declaration
+| VISIBILITY { checkIfInClass(); }
 ;
 
 block_of_code: {	
@@ -109,6 +113,11 @@ return_statement: RETURN { validateReturn(VOIDD) }
 | 
 ;
 
+class_declaration: CLASS_DECL VARIABLE_NAME { setClassFlag(true); handleNewName($2, NONE, CLASS);} block_of_code {
+	printf("class \n");
+	setClassFlag(false);
+	}
+;
 
 if_instruction: IF '(' comparison ')' single_instruction
 | IF '(' comparison ')'single_instruction ELSE single_instruction

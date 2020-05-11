@@ -15,7 +15,12 @@ if { return IF; }
 else { return ELSE; }
 void { return VOID; }
 return { return RETURN; }
-for {return FOR;}
+for { return FOR; }
+class { return CLASS_DECL; }
+public: { return VISIBILITY; }
+private: { return VISIBILITY; }
+protected: { return VISIBILITY; }
+
 
 [;] {yylval.stype = yytext[0]; return SEMICOLON; }
 [0-9]+	{ yylval.dtype = atoi(yytext); return NUMBER; }

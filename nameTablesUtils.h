@@ -29,6 +29,10 @@ int countFunctionsVoid = 0;
 
 char* namesErr[1000];
 int countNamesErr = 0;
+ 
+char* classes[1000];
+int countClasses = 0;
+
 
 bool wasReturnStatement = false;
 enum Type lastFunctionType = NONE;
@@ -37,6 +41,8 @@ char** names;
 int* countNames;
 
 bool isLocalVariable = false;
+bool isClassBlock = false;
+
 int countVariablesStringToRemove = 0;
 int countVariablesNumericalToRemove = 0;
 int countVariablesLogicalToRemove = 0;
@@ -86,6 +92,10 @@ void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 			break;
 		}
 	}
+	else if (nameOrigin == CLASS) {
+		names = classes;
+		countNames = &countClasses;
+	}
 	else{
 		printf("DEV ERROR: setProperOperants: not known origin: '%d' ! \n", (int)nameOrigin);
 	}
@@ -97,7 +107,6 @@ void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 */
 bool nameInTypeExists(char* variableName)
 {
-
 	for (int i = 0; i < *countNames; i++)
 	{
 		char* currString = names[i];
@@ -290,6 +299,15 @@ void setLocalVariableFlag() {
 	isLocalVariable = true;
 }
 
+void setClassFlag(bool flag) {
+	isClassBlock = flag;
+}
+
+void checkIfInClass() {
+	if (!isClassBlock) {
+		printf("ERROR: visibility identifier can only be declared in classes! \n");
+	}
+}
 void resetLocalValues() {
 
 	countVariablesStringToRemove = 0;

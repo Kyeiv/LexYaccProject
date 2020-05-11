@@ -53,7 +53,9 @@
      VARIABLE_NAME = 269,
      STRING_VALUE = 270,
      RETURN = 271,
-     FOR = 272
+     FOR = 272,
+     CLASS_DECL = 273,
+     VISIBILITY = 274
    };
 #endif
 
@@ -75,7 +77,7 @@ SUPER_TYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 79 "parser.h"
+#line 81 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

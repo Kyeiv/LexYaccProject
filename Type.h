@@ -11,7 +11,8 @@ enum Type
 enum NameOrigin
 {
 	VAR,
-	FUNC
+	FUNC,
+	CLASS
 };
 
 char* getTypeName(enum Type type) {
@@ -31,5 +32,6 @@ char* getNameOriginString(enum NameOrigin nameOrigin) {
 	{
 	case VAR: return "variable";
 	case FUNC: return "function";
+	case CLASS: return "class";
 	}
 }
