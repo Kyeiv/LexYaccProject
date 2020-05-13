@@ -4,99 +4,65 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "Type.h"
+#include "NameOrigin.h"
 
-char* variablesNumerical[1000];
-int countVariablesNumerical = 0;
+#define NULL 0
+#define NONE "none"
+#define VOIDD "void"
 
-char* variablesString[1000];
-int countVariablesString = 0;
+struct TypedName {
+	char* name;
+	char* type;
+};
 
-char* variablesLogical[1000];
-int countVariablesLogical = 0;
+struct TypedName* Variable_new(char* name, char* type) {
+	struct TypedName* v = malloc(sizeof(struct TypedName));
+	v->name = name;
+	v->type = type;
+	return v;
+}
 
-char* functionsNumerical[1000];
-int countFunctionsNumerical = 0;
+struct TypedName* variables[1000];
+int countVariables = 0;
 
-char* functionsString[1000];
-int countFunctionsString = 0;
+struct TypedName* functions[1000];
+int countFunctions = 0;
 
-char* functionsLogical[1000];
-int countFunctionsLogical = 0;
-
-char* functionsVoid[1000];
-int countFunctionsVoid = 0;
-
-char* namesErr[1000];
-int countNamesErr = 0;
- 
-char* classes[1000];
+struct TypedName* classes[1000];
 int countClasses = 0;
 
-
+struct TypedName* namesErr[1000];
+int countNamesErr = 0;
+ 
 bool wasReturnStatement = false;
-enum Type lastFunctionType = NONE;
+char* lastFunctionType = NONE;
 
-char** names;
+struct TypedName** names;
 int* countNames;
 
 bool isLocalVariable = false;
 bool isClassBlock = false;
 
-int countVariablesStringToRemove = 0;
-int countVariablesNumericalToRemove = 0;
-int countVariablesLogicalToRemove = 0;
+int countVariablesToRemove = 0;
 
-void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
+void setProperOperants(enum NameOrigin nameOrigin)
 {
-	if (nameOrigin == VAR) {
-		switch (type)
-		{
-		case NUMERICAL:
-			names = variablesNumerical;
-			countNames = &countVariablesNumerical;
-			break;
-		case CHARACTERS:
-			names = variablesString;
-			countNames = &countVariablesString;
-			break;
-		case LOGICAL:
-			names = variablesLogical;
-			countNames = &countVariablesLogical;
-			break;
-		case VOIDD:
-			names = namesErr;
-			countNames = &countNamesErr;
-			printf("DEV ERROR: setProperOperants: do not use 'void' with variables! \n");
-			break;
-		}
+	if (nameOrigin == VAR) 
+	{
+		names = variables;
+		countNames = &countVariables;
 	}
-	else if (nameOrigin == FUNC) {
-		switch (type)
-		{
-		case NUMERICAL:
-			names = functionsNumerical;
-			countNames = &countFunctionsNumerical;
-			break;
-		case CHARACTERS:
-			names = functionsString;
-			countNames = &countFunctionsString;
-			break;
-		case LOGICAL:
-			names = functionsLogical;
-			countNames = &countFunctionsLogical;
-			break;
-		case VOIDD:
-			names = functionsVoid;
-			countNames = &countFunctionsVoid;
-			break;
-		}
+	else if (nameOrigin == FUNC) 
+	{
+		names = functions;
+		countNames = &countFunctions;
 	}
-	else if (nameOrigin == CLASS) {
+	else if (nameOrigin = CLASS) 
+	{
 		names = classes;
 		countNames = &countClasses;
 	}
-	else{
+	else {
 		printf("DEV ERROR: setProperOperants: not known origin: '%d' ! \n", (int)nameOrigin);
 	}
 
@@ -105,12 +71,11 @@ void setProperOperants(enum Type type, enum NameOrigin nameOrigin)
 /*
 	check in a one type if variable exists --==!! needing setProperOperants first !!==--
 */
-bool nameInTypeExists(char* variableName)
+bool nameExists(char* variableName)
 {
 	for (int i = 0; i < *countNames; i++)
 	{
-		char* currString = names[i];
-		if (strcmp(currString, variableName) == 0)
+		if (strcmp(names[i]->name, variableName) == 0)
 		{
 			return true;
 		}
@@ -118,54 +83,52 @@ bool nameInTypeExists(char* variableName)
 	return false;
 }
 
-void addLocalVariableToRemove(enum Type type) {
-	switch (type)
+bool nameInTypeExists(char* variableName, char* type) {
+	for (int i = 0; i < *countNames; i++)
 	{
-	case NUMERICAL:
-		countVariablesNumericalToRemove++;
-		break;
-	case CHARACTERS:
-		countVariablesStringToRemove++;
-		break;
-	case LOGICAL:
-		countVariablesLogicalToRemove++;
-		break;
-	}
-}
-
-void handleNewName(char* variableName, enum Type type, enum NameOrigin nameOrigin)
-{
-	if (isLocalVariable) {
-		addLocalVariableToRemove(type);
-	}
-	int max_search_count = VOIDD;
-
-	if (nameOrigin == VAR) {
-		max_search_count = LOGICAL;
-	}
-
-	for (int i = 0; i <= max_search_count; i++)
-	{
-		setProperOperants((enum Type) i, nameOrigin);
-		if(nameInTypeExists(variableName))
+		if (strcmp(names[i]->name, variableName) == 0 && strcmp(names[i]->type, type) == 0)
 		{
-			printf("ERROR: %s '%s' already exist! \n", getNameOriginString(nameOrigin), variableName);
-			return;
+			return true;
 		}
 	}
-	setProperOperants(type, nameOrigin);
-	names[*countNames] = variableName;
-	printf("%s name: %s \n", getNameOriginString(nameOrigin), names[*countNames]);
+	return false;
+}
+
+struct TypedName* getTypedName(char* name) {
+	for (int i = 0; i < *countNames; i++)
+	{
+		if (strcmp(names[i]->name, name) == 0)
+		{
+			return names[i];
+		}
+	}
+	return NULL;
+}
+
+void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
+{
+	if (isLocalVariable) {
+		countVariablesToRemove++;
+	}
+
+	setProperOperants(nameOrigin);
+	if(nameExists(name))
+	{
+		printf("ERROR: %s '%s' already exist! \n", getNameOriginString(nameOrigin), name);
+		return;
+	}
+	names[*countNames] = Variable_new(name, type);
+	printf("%s name: %s \n", getNameOriginString(nameOrigin), names[*countNames]->name);
 	*countNames = *countNames + 1;
 
 }
 
-bool handleNameInAssigning(char* variableName, enum Type type, enum NameOrigin nameOrigin)
+bool handleNameInAssigning(char* variableName, char* type, enum NameOrigin nameOrigin)
 {
-	setProperOperants(type, nameOrigin);
-	if (!nameInTypeExists(variableName))
+	setProperOperants(nameOrigin);
+	if (!nameInTypeExists(variableName, type))
 	{
-		printf("ERROR: %s '%s' of '%s' type doesn't exist! \n", getNameOriginString(nameOrigin), variableName, getTypeName(type));
+		printf("ERROR: %s '%s' of '%s' type doesn't exist! \n", getNameOriginString(nameOrigin), variableName, type);
 		return false;
 	}
 	else
@@ -176,124 +139,87 @@ bool handleNameInAssigning(char* variableName, enum Type type, enum NameOrigin n
 /*
 	check in all types if variable exists
 */
-bool nameExistsInOrigin(char* variable, enum NameOrigin nameOrigin) {
-
-	for (int i = 0; i <= LOGICAL; i++) {
-
-		setProperOperants((enum Type) i, nameOrigin);
-		if (nameInTypeExists(variable)) {
-			return true;
-		}
+void nameExistsInOrigin(char* name, enum NameOrigin nameOrigin) {
+	setProperOperants(nameOrigin);
+	if (nameExists(name)) {
+		return true;
 	}
-	printf("ERROR: %s '%s' doesn't exist \n", getNameOriginString(nameOrigin), variable);
+	printf("ERROR: %s '%s' doesn't exist \n", getNameOriginString(nameOrigin), name);
 	return false;
 }
 
 /*
 	check in Numerical type if variable exists 
 */
-void nameInNumericalTypeExists(char* variable, enum NameOrigin nameOrigin) {
-
-	setProperOperants(NUMERICAL, nameOrigin);
-	if (!nameInTypeExists(variable)) {
-		printf("ERROR: %s '%s' of 'int' type doesn't exist \n", getNameOriginString(nameOrigin), variable);
+void nameInTypeExistsInOrigin(char* name, char* type, enum NameOrigin nameOrigin) {
+	setProperOperants(nameOrigin);
+	if (!nameInTypeExists(name, type)) {
+		printf("ERROR: %s '%s' of '%s' type doesn't exist \n", getNameOriginString(nameOrigin), name, type);
 	}
 }
 
 //@TODO support func + var, var+var etc //for now var+var or func+func
-void validateTwoAssigningOperants(char* var1, char* var2, enum NameOrigin nameOrigin) {
+void validateTwoAssigningOperants(char* name1, char* name2, enum NameOrigin nameOrigin) {
 
-	bool isExistsVar1 = false,
-		isExistsVar2 = false;
-	enum Type typeVar1,
-		typeVar2;
-
-	for (int i = 0; i <= LOGICAL; i++) {
-		setProperOperants((enum Type)i, nameOrigin);
-		if (!isExistsVar1 && nameInTypeExists(var1)) {
-			isExistsVar1 = true;
-			typeVar1 = (enum Type) i;
-		}
-		if (!isExistsVar2 && nameInTypeExists(var2)) {
-			isExistsVar2 = true;
-			typeVar2 = (enum Type) i;
-		}
-	}
+	setProperOperants(nameOrigin);
+	struct TypedName* typedName1 = getTypedName(name1);
+	struct TypedName* typedName2 = getTypedName(name2);
 	
-	if (!isExistsVar1) {
-		printf("ERRORc: %s %s doesn't exist \n", getNameOriginString(nameOrigin), var1);
+	if (typedName1 == NULL) {
+		printf("ERRORc: %s %s doesn't exist \n", getNameOriginString(nameOrigin), name1);
 	}
-	if (!isExistsVar2) {
-		printf("ERRORc: %s %s doesn't exist \n", getNameOriginString(nameOrigin), var2);
+	if (typedName2 == NULL) {
+		printf("ERRORc: %s %s doesn't exist \n", getNameOriginString(nameOrigin), name2);
 	}
-	if (isExistsVar1 && isExistsVar2 && typeVar1 != typeVar2) {
-		printf("ERRORc: Types missmatch! Cannot assigned '%s' to '%s' \n", getTypeName(typeVar1), getTypeName(typeVar2));
+	if (typedName1 != NULL && typedName2 != NULL && strcmp(typedName1->type,typedName2->type) != 0) {
+		printf("ERRORc: Types missmatch! Cannot assigned '%s' to '%s' \n", typedName1->type, typedName2->type);
 	}
 }
 
-void setLastFunctionType(enum Type type)
+void setLastFunctionType(char* type)
 {
 	lastFunctionType = type;
 }
 
-void validateReturn(enum Type type)
+void validateReturn(char* type)
 {
-	if (lastFunctionType == NONE) {
+	if (strcmp(lastFunctionType, NONE) == 0) {
 		printf("ERROR: Cannot return without function! \n");
 		return;
 	}
 
-	if (type != lastFunctionType) {
-		printf("ERROR: Types missmatch! Cannot return %s in %s function \n", getTypeName(type), getTypeName(lastFunctionType));
+	if (strcmp(lastFunctionType, type) != 0) {
+		printf("ERROR: Types missmatch! Cannot return %s in %s function \n", type, lastFunctionType);
 	}
 	else {
 		wasReturnStatement = true;
 	}
 }
 
-void validateReturnWithVarName(char* varName)
+void validateReturnWithVarName(char* name)
 {
-	enum Type type = getVarTypeFromName(varName);
-	if (type == NONE)
+	struct TypedName* var = getTypedName(name);
+	if (var == NULL)
 	{
-		printf("ERROR: no previous declaration of return variable '%s' \n", varName);
+		printf("ERROR: no previous declaration of return variable '%s' \n", name);
 	}
 	else
 	{
-		validateReturn(type);
+		validateReturn(var->type);
 	}
-}
-
-enum Type getVarTypeFromName(char* varName)
-{
-	for (int i = 0; i <= LOGICAL; i++) {
-
-		setProperOperants((enum Type) i, VAR);
-		if (nameInTypeExists(varName)) {
-			return (enum Type) i;
-		}
-	}
-	return NONE;
 }
 
 void validateEndOfFunction()
 {
-	switch (lastFunctionType)
+	if (strcmp(lastFunctionType, NONE) != 0 && strcmp(lastFunctionType, VOIDD) != 0)
 	{
-	case NUMERICAL:
-	case CHARACTERS:
-	case LOGICAL:
 		if (!wasReturnStatement) {
-			printf("ERROR: No return statement at the end of %s function! \n", getTypeName(lastFunctionType));
+			printf("ERROR: No return statement at the end of %s function! \n", lastFunctionType);
 		}
-		break;
 	}
-	
 	wasReturnStatement = false;
 	lastFunctionType = NONE;
 }
-
-
 
 void setLocalVariableFlag() {
 	isLocalVariable = true;
@@ -308,33 +234,21 @@ void checkIfInClass() {
 		printf("ERROR: visibility identifier can only be declared in classes! \n");
 	}
 }
-void resetLocalValues() {
 
-	countVariablesStringToRemove = 0;
-	countVariablesNumericalToRemove = 0;
-	countVariablesLogicalToRemove = 0;
+void resetLocalValues() {
+	countVariablesToRemove = 0;
 }
 
 void removeLocalVariable() {
-	for (int i = 0; i <= LOGICAL; i++) {
-
-		setProperOperants((enum Type)i, VAR);
-		switch ((enum Type)i)
-		{
-		case NUMERICAL:
-			countVariablesNumerical = countVariablesNumerical - countVariablesNumericalToRemove;
-			break;
-		case CHARACTERS:
-			countVariablesString = countVariablesString - countVariablesStringToRemove;
-			break;
-		case LOGICAL:
-			countVariablesLogical = countVariablesLogical - countVariablesLogicalToRemove;
-			break;
-		}
+	int oldCount = countVariables;
+	countVariables -= countVariablesToRemove;
+	for (int i=countVariables; i< countVariables; i++)
+	{
+		free(variables[i]);
 	}
 }
-void endedBlockOfCode() {
 
+void endedBlockOfCode() {
 	removeLocalVariable();
 	isLocalVariable = false;
 	resetLocalValues();

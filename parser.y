@@ -4,6 +4,13 @@
 	#include <math.h>
 	#include <stdbool.h>
 	#include "nameTablesUtils.h"
+	
+	#define NUMERICAL "numerical"
+	#define CHARACTERS "char"
+	#define LOGICAL "bool"
+	#define VOIDD "void"
+	#define NONE "none"
+
 	void yyerror(char *s);
 	int yylex();
 	bool isAssigned = false;
@@ -33,7 +40,7 @@
 %token <stype>FOR
 %token <stype>CLASS_DECL
 %token <stype>VISIBILITY
-%type<stype> function_name
+%type <stype>function_name
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
@@ -195,7 +202,7 @@ assigning:  VARIABLE_NAME '=' STRING_VALUE {
 	validateTwoAssigningOperants($1, $3, VAR)
 } 
 |  VARIABLE_NAME '=' expression {
-	nameInNumericalTypeExists($1, VAR); //only 'int' type is allowed
+	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed
 	isAssigned = false;
 }
 |  VARIABLE_NAME '=' bool_value {
@@ -215,7 +222,7 @@ comparison:  VARIABLE_NAME'=''='STRING_VALUE {
 	validateTwoAssigningOperants($1, $4, VAR)
 } 
 |  VARIABLE_NAME'=''='expression  {
-	nameInNumericalTypeExists($1, VAR); //only 'int' type is allowed
+	nameExists($1, NUMERICAL, VAR); //only 'int' type is allowed
 	isAssigned = false;
 }
 |  VARIABLE_NAME'=''='bool_value {
