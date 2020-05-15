@@ -48,6 +48,8 @@ bool isClassBlock = false;
 
 int countVariablesToRemove = 0;
 
+char* usedFunctionName = NONE;
+
 void setProperOperants(enum NameOrigin nameOrigin)
 {
 	if (nameOrigin == VAR) 
@@ -290,4 +292,14 @@ void isPrimitive(char* type) {
 	if (strcmp(type, NUMERICAL) == 0 || strcmp(type, CHARACTERS) == 0 || strcmp(type, LOGICAL) == 0) {
 		printf("ERROR:cannot access primitive type '%s' \n", type);
 	}
+}
+
+void setUsedFunctionName(char* name)
+{
+	usedFunctionName = name;
+}
+
+char* getUsedFunctionName()
+{
+	return usedFunctionName;
 }

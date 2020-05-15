@@ -60,6 +60,7 @@ expression: NUMBER {
 |	expression'-'expression { }
 |	expression'*'expression { }
 |	expression'/'expression { }
+|	function_usage { nameInTypeExistsInOrigin(getUsedFunctionName(), NUMERICAL, FUNC); setUsedFunctionName(NONE); }
 ;
 
 instruction: single_instruction
@@ -75,6 +76,7 @@ single_instruction: if_instruction
 | for_statement
 | class_declaration
 | VISIBILITY { checkIfInClass(); }
+| function_usage SEMICOLON { nameExistsInOrigin(getUsedFunctionName(), FUNC); setUsedFunctionName(NONE); }
 |
 ;
 
@@ -105,6 +107,16 @@ function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setL
 }
 ;
 
+function_usage: function_name'(' function_parameters ')' { setUsedFunctionName($1) }
+;
+
+function_parameters: function_parameters ',' function_parameters
+|	NAME { nameExistsInOrigin($1, VAR); }
+|	variable_declaration
+|	NUMBER
+| 
+;
+
 function_name: NAME {
 	//printf("variable_declaration!!!\n"); 
 	setLocalVariableFlag();
@@ -121,6 +133,7 @@ return_statement: RETURN { validateReturn(VOIDD) }
 | RETURN bool_value { validateReturn(LOGICAL) }
 | RETURN STRING_VALUE { validateReturn(CHARACTERS) }
 | RETURN NAME { validateReturnWithVarName($2) }
+| RETURN expression { validateReturn(NUMERICAL) }
 | 
 ;
 
