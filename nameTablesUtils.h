@@ -7,8 +7,11 @@
 #include "NameOrigin.h"
 
 #define NULL 0
-#define NONE "none"
+#define NUMERICAL "numerical"
+#define CHARACTERS "char"
+#define LOGICAL "bool"
 #define VOIDD "void"
+#define NONE "none"
 
 struct TypedName {
 	char* name;
@@ -104,7 +107,17 @@ struct TypedName* getTypedName(char* name) {
 	}
 	return NULL;
 }
-
+char* getNameFromDataAccess(char* text) {
+	for (int i = 0; i < strlen(text); i++) {
+		if (text[i] == '.') {
+			char* dest = malloc(i*sizeof(char));
+			strncpy(dest, text, i);
+			dest[i] = '\0';
+			//printf("%s", dest);
+			return dest;
+		}
+	}
+}
 void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 {
 	if (isLocalVariable) {
@@ -112,6 +125,19 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 	}
 
 	setProperOperants(nameOrigin);
+
+	if (nameOrigin == CLASS && strcmp(type, NONE) != 0) //If type==NONE that means it's class declaration
+														//If type!=NONE - its a class variable
+	{
+		if (!nameExists(type))
+		{
+			printf("ERROR: class '%s not found! \n", type);
+			return;
+		}
+		nameOrigin = VAR;
+		setProperOperants(nameOrigin);
+	}
+
 	if(nameExists(name))
 	{
 		printf("ERROR: %s '%s' already exist! \n", getNameOriginString(nameOrigin), name);
@@ -120,7 +146,6 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 	names[*countNames] = Variable_new(name, type);
 	printf("%s name: %s \n", getNameOriginString(nameOrigin), names[*countNames]->name);
 	*countNames = *countNames + 1;
-
 }
 
 bool handleNameInAssigning(char* variableName, char* type, enum NameOrigin nameOrigin)
@@ -252,4 +277,17 @@ void endedBlockOfCode() {
 	removeLocalVariable();
 	isLocalVariable = false;
 	resetLocalValues();
+}
+
+void validateExistenceAndIsNotPrimitve(char* name) {
+	setProperOperants(VAR);
+	struct TypedName* typedName = getTypedName(name);
+	if (typedName == NULL) {
+		printf("ERROR: variable '%s' doesn't exist \n", name);
+	}
+}
+void isPrimitive(char* type) {
+	if (strcmp(type, NUMERICAL) == 0 || strcmp(type, CHARACTERS) == 0 || strcmp(type, LOGICAL) == 0) {
+		printf("ERROR:cannot access primitive type '%s' \n", type);
+	}
 }

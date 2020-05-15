@@ -26,6 +26,7 @@ protected: { return VISIBILITY; }
 [0-9]+	{ yylval.dtype = atoi(yytext); return NUMBER; }
 [-+*/()=^;,{}<>!]  return yytext[0];
 \".*\" { yylval.stype = yytext[0]; return STRING_VALUE; }
-[a-zA-Z_$][a-zA-Z_$0-9]* { yylval.stype=strdup(yytext); return VARIABLE_NAME; }
+[a-zA-Z_$][a-zA-Z_$0-9]*"."[a-zA-Z_$][a-zA-Z_$0-9()*]* { yylval.stype=strdup(yytext); return DATA_ACCESS; }
+[a-zA-Z_$][a-zA-Z_$0-9]* { yylval.stype=strdup(yytext); return NAME; }
 [\n]	return '\n';
 %%

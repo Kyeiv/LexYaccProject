@@ -34,13 +34,14 @@
 %token <stype>IF
 %token <stype>ELSE
 %token <stype>SEMICOLON
-%token <stype>VARIABLE_NAME
+%token <stype>NAME
 %token <stype>STRING_VALUE
 %token <stype>RETURN
 %token <stype>FOR
 %token <stype>CLASS_DECL
 %token <stype>VISIBILITY
 %type <stype>function_name
+%token <stype>DATA_ACCESS
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
@@ -49,14 +50,16 @@ program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
 expression: NUMBER { 
 	isAssigned = true;
 }
-|	VARIABLE_NAME { 
+|	NAME { 
 	isAssigned = handleNameInAssigning($1, NUMERICAL, VAR); 
+}
+|   object_access {
+	isAssigned = true;
 }
 |	expression'+'expression { }
 |	expression'-'expression { }
 |	expression'*'expression { }
 |	expression'/'expression { }
-|
 ;
 
 instruction: single_instruction
@@ -72,6 +75,7 @@ single_instruction: if_instruction
 | for_statement
 | class_declaration
 | VISIBILITY { checkIfInClass(); }
+|
 ;
 
 block_of_code: {	
@@ -101,7 +105,7 @@ function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setL
 }
 ;
 
-function_name: VARIABLE_NAME {
+function_name: NAME {
 	//printf("variable_declaration!!!\n"); 
 	setLocalVariableFlag();
 	}
@@ -116,11 +120,11 @@ return_statement: RETURN { validateReturn(VOIDD) }
 | RETURN NUMBER { validateReturn(NUMERICAL) }
 | RETURN bool_value { validateReturn(LOGICAL) }
 | RETURN STRING_VALUE { validateReturn(CHARACTERS) }
-| RETURN VARIABLE_NAME { validateReturnWithVarName($2) }
+| RETURN NAME { validateReturnWithVarName($2) }
 | 
 ;
 
-class_declaration: CLASS_DECL VARIABLE_NAME { setClassFlag(true); handleNewName($2, NONE, CLASS);} block_of_code {
+class_declaration: CLASS_DECL NAME { setClassFlag(true); handleNewName($2, NONE, CLASS);} block_of_code {
 	printf("class \n");
 	setClassFlag(false);
 	}
@@ -152,8 +156,8 @@ op: '>'
 | '<''='
 | '>''=';
 
-for_third_arg: VARIABLE_NAME increase_decrease
-| increase_decrease VARIABLE_NAME
+for_third_arg: NAME increase_decrease
+| increase_decrease NAME
 | for_third_arg ',' for_third_arg
 | assigning
 |
@@ -162,77 +166,101 @@ for_third_arg: VARIABLE_NAME increase_decrease
  increase_decrease: '+''+'
  | '-''-';
 
-variable_declaration: numerical_type_variable VARIABLE_NAME {
+variable_declaration: numerical_type_variable NAME {
 	handleNewName($2, NUMERICAL, VAR);
 }
-| characters_type_variable VARIABLE_NAME { 
+| characters_type_variable NAME { 
 	handleNewName($2, CHARACTERS, VAR);
 }
-| logical_type_variable VARIABLE_NAME { 
+| logical_type_variable NAME { 
 	handleNewName($2, LOGICAL, VAR);
 }
-| characters_type_variable VARIABLE_NAME '=' STRING_VALUE {
+| NAME NAME {
+	handleNewName($2, $1, CLASS);
+}
+| characters_type_variable NAME '=' STRING_VALUE {
 	handleNewName($2, CHARACTERS, VAR);
 }
-| numerical_type_variable VARIABLE_NAME '=' expression {
+| characters_type_variable NAME '=' object_access {
+	handleNewName($2, CHARACTERS, VAR);
+}
+| numerical_type_variable NAME '=' expression {
 	if (isAssigned) {
 		handleNewName($2, NUMERICAL, VAR); 
 	}
 	isAssigned = false;
 }
-| logical_type_variable VARIABLE_NAME '=' bool_value {
+| logical_type_variable NAME '=' bool_value {
 	handleNewName($2, LOGICAL, VAR); 
 }
-| logical_type_variable VARIABLE_NAME '=' VARIABLE_NAME {
+| logical_type_variable NAME '=' object_access {
+	handleNewName($2, LOGICAL, VAR); 
+}
+| logical_type_variable NAME '=' NAME {
 	if (handleNameInAssigning($4, LOGICAL, VAR)) {
 		handleNewName($2, LOGICAL, VAR); 
 	}
 }
-| characters_type_variable VARIABLE_NAME '=' VARIABLE_NAME {
+| characters_type_variable NAME '=' NAME {
 	if (handleNameInAssigning($4, CHARACTERS, VAR)) {
 		handleNewName($2, CHARACTERS, VAR); 
 	}
 }
+| NAME NAME '=' NAME {
+	if (handleNameInAssigning($4, $1, VAR)) {
+		handleNewName($2, $1, CLASS);
+	}
+}
+| NAME NAME '=' object_access {
+	handleNewName($2, $1, CLASS);
+}
 ;
 
-assigning:  VARIABLE_NAME '=' STRING_VALUE { 
+assigning:  NAME '=' STRING_VALUE { 
 	handleNameInAssigning($1, CHARACTERS, VAR);  
 }
-|  VARIABLE_NAME '=' VARIABLE_NAME {
+|  NAME '=' NAME {
 	validateTwoAssigningOperants($1, $3, VAR)
 } 
-|  VARIABLE_NAME '=' expression {
+|  NAME '=' expression {
 	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed
 	isAssigned = false;
 }
-|  VARIABLE_NAME '=' bool_value {
+|  NAME '=' bool_value {
 	if (handleNameInAssigning($1, LOGICAL, VAR)) {
 		nameExistsInOrigin($1, VAR);
 	}
 }
-|  VARIABLE_NAME {
+| NAME '=' object_access
+| object_access '=' object_access
+| object_access '=' NAME
+| object_access
+| NAME {
 	nameExistsInOrigin($1, VAR);
 }
 ;
 
-comparison:  VARIABLE_NAME'=''='STRING_VALUE { 
+comparison:  NAME'=''='STRING_VALUE { 
 	handleNameInAssigning($1, CHARACTERS, VAR);
 }
-|  VARIABLE_NAME'=''='VARIABLE_NAME {
+|  NAME'=''='NAME {
 	validateTwoAssigningOperants($1, $4, VAR)
 } 
-|  VARIABLE_NAME'=''='expression  {
-	nameExists($1, NUMERICAL, VAR); //only 'int' type is allowed
+|  object_access'=''='object_access
+|  object_access'=''='NAME
+|  NAME'=''='expression  {
+	nameExists($1); //only 'int' type is allowed
 	isAssigned = false;
 }
-|  VARIABLE_NAME'=''='bool_value {
+|  NAME'=''='bool_value {
 	if (handleNameInAssigning($1, LOGICAL, VAR)) {
 		nameExistsInOrigin($1, VAR);
 	}
 }
-|  VARIABLE_NAME {
+|  NAME {
 	nameExistsInOrigin($1, VAR);
 }
+| object_access
 | bool_value
 ;
 
@@ -251,6 +279,10 @@ bool_value: TRUE
 | FALSE
 ;
 
+object_access: DATA_ACCESS {
+	validateExistenceAndIsNotPrimitve(getNameFromDataAccess($1));
+}
+;
 
 /*
 TODO
