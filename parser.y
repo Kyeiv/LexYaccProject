@@ -77,7 +77,6 @@ single_instruction: if_instruction
 | class_declaration
 | VISIBILITY { checkIfInClass(); }
 | function_usage SEMICOLON { nameExistsInOrigin(getUsedFunctionName(), FUNC); setUsedFunctionName(NONE); }
-|
 ;
 
 block_of_code: {	
