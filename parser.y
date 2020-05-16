@@ -244,7 +244,20 @@ assigning:  NAME '=' STRING_VALUE {
 }
 ;
 
-comparison:  NAME'=''='STRING_VALUE { 
+comparison:  equal_comparision
+| not_equal_comparision
+|  NAME {
+	nameInTypeExistsInOrigin($1, LOGICAL, VAR); //only 'bool' type is allowed
+}
+| '!' NAME {
+	nameInTypeExistsInOrigin($2, LOGICAL, VAR); //only 'bool' type is allowed
+}
+| object_access
+| bool_value
+;
+
+equal_comparision:
+NAME'=''='STRING_VALUE { 
 	handleNameInAssigning($1, CHARACTERS, VAR);
 }
 |  NAME'=''='NAME {
@@ -252,21 +265,35 @@ comparison:  NAME'=''='STRING_VALUE {
 } 
 |  object_access'=''='object_access
 |  object_access'=''='NAME
-|  NAME'=''='expression  {
-	nameExists($1); //only 'int' type is allowed
-	isAssigned = false;
-}
 |  NAME'=''='bool_value {
 	if (handleNameInAssigning($1, LOGICAL, VAR)) {
 		nameExistsInOrigin($1, VAR);
 	}
 }
-|  NAME {
-	nameExistsInOrigin($1, VAR);
+
+//|  NAME'=''='expression  { 
+//	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed!!!
+//	isAssigned = false;
+//}
+
+not_equal_comparision: 
+NAME'!''='STRING_VALUE { 
+	handleNameInAssigning($1, CHARACTERS, VAR);
 }
-| object_access
-| bool_value
-;
+|  NAME'!''='NAME {
+	validateTwoAssigningOperants($1, $4, VAR)
+} 
+|  object_access'!''='object_access
+|  object_access'!''='NAME
+|  NAME'!''='bool_value {
+	if (handleNameInAssigning($1, LOGICAL, VAR)) {
+		nameExistsInOrigin($1, VAR);
+	}
+}
+//|  NAME'!''='expression  { 
+//	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed!!!
+//	isAssigned = false;
+//}
 
 numerical_type_variable:  DOUBLE
 | INT
