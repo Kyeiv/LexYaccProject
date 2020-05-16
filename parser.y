@@ -40,7 +40,6 @@
 %token <stype>FOR
 %token <stype>CLASS_DECL
 %token <stype>VISIBILITY
-%type <stype>function_name
 %token <stype>DATA_ACCESS
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
@@ -81,32 +80,32 @@ single_instruction: if_instruction
 
 block_of_code: {	
 	//printf ("setFlagLocalVariable \n"); 
-	setLocalVariableFlag();
+	startedBlockOfCode();
 } '{' instruction '}' {
 	//printf ("endedBlockOfCode \n"); 
 	endedBlockOfCode();
 }
 ;
-function: numerical_type_variable  function_name { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); } '(' function_variables ')' block_of_code { 
+function: numerical_type_variable  NAME { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
 	printf("numerical func \n"); 
 	validateEndOfFunction();
 	handleNewName($2, NUMERICAL, FUNC);
 }
-| characters_type_variable  function_name { printf("stringFuncBEg \n"); setLastFunctionType(CHARACTERS); } '(' function_variables ')' block_of_code { 
+| characters_type_variable  NAME { printf("stringFuncBEg \n"); setLastFunctionType(CHARACTERS); handleFunctionHeader();} '(' function_variables ')' block_of_code { 
 	printf("string func \n"); 
 	handleNewName($2, CHARACTERS, FUNC);
 }
-| logical_type_variable  function_name { printf("boolFuncBEg \n"); setLastFunctionType(LOGICAL); } '(' function_variables ')' block_of_code { 
+| logical_type_variable  NAME { printf("boolFuncBEg \n"); setLastFunctionType(LOGICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
 	printf("bool func \n"); 
 	handleNewName($2, LOGICAL, FUNC);
 }
-| void_type function_name { printf("voidFuncBEg \n"); setLastFunctionType(VOIDD); } '(' function_variables ')' block_of_code{
+| void_type NAME { printf("voidFuncBEg \n"); setLastFunctionType(VOIDD); handleFunctionHeader();} '(' function_variables ')' block_of_code{
 	printf("void func \n"); 
 	handleNewName($2, VOIDD, FUNC);
 }
 ;
 
-function_usage: function_name'(' function_parameters ')' { setUsedFunctionName($1) }
+function_usage: NAME  '(' function_parameters ')' { setUsedFunctionName($1) }
 ;
 
 function_parameters: function_parameters ',' function_parameters
@@ -114,12 +113,6 @@ function_parameters: function_parameters ',' function_parameters
 |	variable_declaration
 |	NUMBER
 | 
-;
-
-function_name: NAME {
-	//printf("variable_declaration!!!\n"); 
-	setLocalVariableFlag();
-	}
 ;
 
 function_variables: variable_declaration
@@ -147,8 +140,7 @@ if_instruction: IF '(' comparison ')' single_instruction
 ;
 
 for_statement: FOR '(' { 
-	//printf ("for statement \n"); 
-	setLocalVariableFlag();
+	handleForStatement();
 	}
 	for_first_arg SEMICOLON for_second_arg SEMICOLON for_third_arg ')' block_of_code
 
@@ -296,19 +288,13 @@ object_access: DATA_ACCESS {
 }
 ;
 
-/*
-TODO
-typ_zmiennej: numerical_type_variable
-| characters_type_variable
-;
-*/
-
 %%
 void yyerror(char *s) {
 	fprintf(stderr, "%s\n", s);
 }
 
 int main(void) {
+	initStack();
 	yyparse();
 	return 0;
 }

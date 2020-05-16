@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "NameOrigin.h"
+#include "Stack.h"
 
 #define NULL 0
 #define NUMERICAL "numerical"
@@ -36,7 +37,7 @@ int countClasses = 0;
 
 struct TypedName* namesErr[1000];
 int countNamesErr = 0;
- 
+
 bool wasReturnStatement = false;
 char* lastFunctionType = NONE;
 
@@ -46,23 +47,31 @@ int* countNames;
 bool isLocalVariable = false;
 bool isClassBlock = false;
 
-int countVariablesToRemove = 0;
-
 char* usedFunctionName = NONE;
+
+struct stack *localVariableStack; //stack representing number of local variable in each block of code
+int leftBracket = 0; //number of starting block of code
+int rightBracket = 0; //number of ending block of code
+bool isHeaderFunction; //check if header function
+int nestedForNumber = 0; //number of nested for
+
+void initStack() {
+	localVariableStack = newStack(1000);
+}
 
 void setProperOperants(enum NameOrigin nameOrigin)
 {
-	if (nameOrigin == VAR) 
+	if (nameOrigin == VAR)
 	{
 		names = variables;
 		countNames = &countVariables;
 	}
-	else if (nameOrigin == FUNC) 
+	else if (nameOrigin == FUNC)
 	{
 		names = functions;
 		countNames = &countFunctions;
 	}
-	else if (nameOrigin = CLASS) 
+	else if (nameOrigin = CLASS)
 	{
 		names = classes;
 		countNames = &countClasses;
@@ -112,7 +121,7 @@ struct TypedName* getTypedName(char* name) {
 char* getNameFromDataAccess(char* text) {
 	for (int i = 0; i < strlen(text); i++) {
 		if (text[i] == '.') {
-			char* dest = malloc(i*sizeof(char));
+			char* dest = malloc(i * sizeof(char));
 			strncpy(dest, text, i);
 			dest[i] = '\0';
 			//printf("%s", dest);
@@ -122,8 +131,8 @@ char* getNameFromDataAccess(char* text) {
 }
 void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 {
-	if (isLocalVariable) {
-		countVariablesToRemove++;
+	if (isLocalVariable || isHeaderFunction || nestedForNumber > 0) { //if local variable or declare variable in (header function or for statement)
+		incrementLocalVariableNumber(localVariableStack);
 	}
 
 	setProperOperants(nameOrigin);
@@ -140,7 +149,7 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 		setProperOperants(nameOrigin);
 	}
 
-	if(nameExists(name))
+	if (nameExists(name))
 	{
 		printf("ERROR: %s '%s' already exist! \n", getNameOriginString(nameOrigin), name);
 		return;
@@ -176,7 +185,7 @@ void nameExistsInOrigin(char* name, enum NameOrigin nameOrigin) {
 }
 
 /*
-	check in Numerical type if variable exists 
+	check in Numerical type if variable exists
 */
 void nameInTypeExistsInOrigin(char* name, char* type, enum NameOrigin nameOrigin) {
 	setProperOperants(nameOrigin);
@@ -191,14 +200,14 @@ void validateTwoAssigningOperants(char* name1, char* name2, enum NameOrigin name
 	setProperOperants(nameOrigin);
 	struct TypedName* typedName1 = getTypedName(name1);
 	struct TypedName* typedName2 = getTypedName(name2);
-	
+
 	if (typedName1 == NULL) {
 		printf("ERRORc: %s %s doesn't exist \n", getNameOriginString(nameOrigin), name1);
 	}
 	if (typedName2 == NULL) {
 		printf("ERRORc: %s %s doesn't exist \n", getNameOriginString(nameOrigin), name2);
 	}
-	if (typedName1 != NULL && typedName2 != NULL && strcmp(typedName1->type,typedName2->type) != 0) {
+	if (typedName1 != NULL && typedName2 != NULL && strcmp(typedName1->type, typedName2->type) != 0) {
 		printf("ERRORc: Types missmatch! Cannot assigned '%s' to '%s' \n", typedName1->type, typedName2->type);
 	}
 }
@@ -248,9 +257,7 @@ void validateEndOfFunction()
 	lastFunctionType = NONE;
 }
 
-void setLocalVariableFlag() {
-	isLocalVariable = true;
-}
+
 
 void setClassFlag(bool flag) {
 	isClassBlock = flag;
@@ -262,23 +269,57 @@ void checkIfInClass() {
 	}
 }
 
-void resetLocalValues() {
-	countVariablesToRemove = 0;
+void handleForStatement() {
+	push(localVariableStack);
+	nestedForNumber++;
 }
 
-void removeLocalVariable() {
-	int oldCount = countVariables;
-	countVariables -= countVariablesToRemove;
-	for (int i=countVariables; i< countVariables; i++)
-	{
-		free(variables[i]);
+void handleFunctionHeader() {
+	push(localVariableStack);
+	isHeaderFunction = true;
+}
+
+void startedBlockOfCode() {
+
+	leftBracket++;
+	push(localVariableStack);
+	isLocalVariable = true;
+}
+
+void removeLocalVariable(bool endOfAllBlock) {
+
+	//remove all variables in ended block of code
+	countVariables -= getNumberOfLocalVariable(localVariableStack);
+	pop(localVariableStack);
+
+	//remove variables from header of function
+	if (endOfAllBlock && isHeaderFunction) { 
+		countVariables -= getNumberOfLocalVariable(localVariableStack);
+		pop(localVariableStack);
+		isHeaderFunction = false;
 	}
+
+	//remove variables from header of for
+	if (nestedForNumber > 0) { 
+		countVariables -= getNumberOfLocalVariable(localVariableStack);
+		pop(localVariableStack);
+		nestedForNumber--;
+	}
+
+	//for debugging
+	//checkIsEmpty(localVariableStack);
+
 }
 
 void endedBlockOfCode() {
-	removeLocalVariable();
-	isLocalVariable = false;
-	resetLocalValues();
+
+	rightBracket++;
+	if (leftBracket == rightBracket) {
+		isLocalVariable = false;
+		leftBracket = 0;
+		rightBracket = 0;
+	}
+	removeLocalVariable(!isLocalVariable);
 }
 
 void validateExistenceAndIsNotPrimitve(char* name) {

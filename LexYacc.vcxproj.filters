@@ -32,6 +32,9 @@
     <ClInclude Include="NameOrigin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lekser.l">
