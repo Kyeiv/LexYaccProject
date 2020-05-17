@@ -56,7 +56,8 @@
      FOR = 272,
      CLASS_DECL = 273,
      VISIBILITY = 274,
-     DATA_ACCESS = 275
+     DATA_ACCESS = 275,
+     INCLUDE = 276
    };
 #endif
 
@@ -78,7 +79,7 @@ SUPER_TYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 82 "parser.h"
+#line 83 "parser.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

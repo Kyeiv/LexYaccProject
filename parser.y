@@ -41,6 +41,7 @@
 %token <stype>CLASS_DECL
 %token <stype>VISIBILITY
 %token <stype>DATA_ACCESS
+%token <stype>INCLUDE
 %%
 program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
@@ -76,6 +77,7 @@ single_instruction: if_instruction
 | class_declaration
 | VISIBILITY { checkIfInClass(); }
 | function_usage SEMICOLON { nameExistsInOrigin(getUsedFunctionName(), FUNC); setUsedFunctionName(NONE); }
+| INCLUDE { handleInclude($1); }
 ;
 
 block_of_code: {	

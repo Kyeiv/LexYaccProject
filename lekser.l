@@ -20,7 +20,7 @@ class { return CLASS_DECL; }
 public: { return VISIBILITY; }
 private: { return VISIBILITY; }
 protected: { return VISIBILITY; }
-
+#include \"[a-z]+.h\" { yylval.stype=strdup(yytext); return INCLUDE; }
 
 [;] {yylval.stype = yytext[0]; return SEMICOLON; }
 [0-9]+	{ yylval.dtype = atoi(yytext); return NUMBER; }
