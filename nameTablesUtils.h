@@ -14,6 +14,8 @@
 #define VOIDD "void"
 #define NONE "none"
 
+int lineCount=0;
+
 struct TypedName {
 	char* name;
 	char* type;
@@ -345,16 +347,19 @@ char* getUsedFunctionName()
 	return usedFunctionName;
 }
 
-void handleInclude(char* includeText)
+char* handleInclude(char* includeText)
 {
-	//#include "[a-z]+.h"
-
 	for (int i = 0; i < strlen(includeText); i++) {
 		if (includeText[i] == '"') {
 			char* dest = malloc((i * sizeof(char)) - 1);
 			strncpy(dest, includeText + i + 1, strlen(includeText) - i - 1);
 			dest[strlen(includeText) - i - 2] = '\0';
 			printf("NAZWA PLIKUUU '%s' \n", dest);
+			return dest;
 		}
 	}
+}
+
+void incrementLineCount() {
+	lineCount++;
 }

@@ -43,7 +43,8 @@
 %token <stype>DATA_ACCESS
 %token <stype>INCLUDE
 %%
-program: program instruction '\n'		{ printf("dobre wyr c++ \n"); }
+program: program instruction		{ printf("dobre wyr c++ \n"); 
+}
 	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
 	|
 	;
@@ -65,6 +66,7 @@ expression: NUMBER {
 
 instruction: single_instruction
 | instruction instruction
+| '\n'
 ;
 
 single_instruction: if_instruction
@@ -333,6 +335,7 @@ void yyerror(char *s) {
 
 int main(void) {
 	initStack();
+	yyin = fopen("src.txt", "r");
 	yyparse();
 	return 0;
 }
