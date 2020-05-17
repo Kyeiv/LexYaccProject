@@ -185,6 +185,10 @@ variable_declaration: numerical_type_variable NAME {
 | characters_type_variable NAME '=' STRING_VALUE {
 	handleNewName($2, CHARACTERS, VAR);
 }
+| characters_type_variable NAME '=' function_usage {
+	handleNewName($2, CHARACTERS, VAR);
+	nameInTypeExistsInOrigin(getUsedFunctionName(), CHARACTERS, FUNC); setUsedFunctionName(NONE);
+}
 | characters_type_variable NAME '=' object_access {
 	handleNewName($2, CHARACTERS, VAR);
 }
@@ -199,6 +203,10 @@ variable_declaration: numerical_type_variable NAME {
 }
 | logical_type_variable NAME '=' object_access {
 	handleNewName($2, LOGICAL, VAR); 
+}
+| logical_type_variable NAME '=' function_usage {
+	handleNewName($2, LOGICAL, VAR); 
+	nameInTypeExistsInOrigin(getUsedFunctionName(), LOGICAL, FUNC); setUsedFunctionName(NONE);
 }
 | logical_type_variable NAME '=' NAME {
 	if (handleNameInAssigning($4, LOGICAL, VAR)) {
@@ -263,6 +271,7 @@ NAME'=''='STRING_VALUE {
 |  NAME'=''='NAME {
 	validateTwoAssigningOperants($1, $4, VAR)
 } 
+|  function_usage '=''=' function_usage
 |  object_access'=''='object_access
 |  object_access'=''='NAME
 |  NAME'=''='bool_value {
