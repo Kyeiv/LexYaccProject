@@ -24,7 +24,7 @@ class { return CLASS_DECL; }
 public: { return VISIBILITY; }
 private: { return VISIBILITY; }
 protected: { return VISIBILITY; }
-"#include "\"[a-zA-Z]+".h"\" { 
+"#include "\"[a-zA-Z_0-9-]+".h"\" { 
 yylval.stype=strdup(yytext); 
 		char* name = handleInclude(strdup(yytext));
 		addLineCounter(name);

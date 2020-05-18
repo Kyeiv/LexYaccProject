@@ -6,7 +6,7 @@
 	#include "nameTablesUtils.h"
 	
 	#define NUMERICAL "numerical"
-	#define CHARACTERS "char"
+	#define CHARACTERS "string"
 	#define LOGICAL "bool"
 	#define VOIDD "void"
 	#define NONE "none"
@@ -146,7 +146,7 @@ for_statement: FOR '(' {
 	handleForStatement();
 	}
 	for_first_arg SEMICOLON for_second_arg SEMICOLON for_third_arg ')' block_of_code
-
+;
 
 for_first_arg: function_variables 
 | assigning
@@ -302,6 +302,7 @@ NAME'!''='STRING_VALUE {
 		nameExistsInOrigin($1, VAR);
 	}
 }
+;
 
 numerical_type_variable:  DOUBLE
 | INT

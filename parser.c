@@ -77,7 +77,7 @@
 	#include "nameTablesUtils.h"
 	
 	#define NUMERICAL "numerical"
-	#define CHARACTERS "char"
+	#define CHARACTERS "string"
 	#define LOGICAL "bool"
 	#define VOIDD "void"
 	#define NONE "none"
@@ -517,7 +517,7 @@ static const yytype_uint16 yyrline[] =
      219,   224,   229,   234,   237,   240,   244,   249,   250,   251,
      252,   253,   258,   259,   260,   263,   266,   267,   271,   274,
      277,   278,   279,   280,   285,   292,   295,   298,   299,   300,
-     306,   307,   310,   313,   315,   317,   318,   321
+     307,   308,   311,   314,   316,   318,   319,   322
 };
 #endif
 
@@ -2138,7 +2138,7 @@ yyreduce:
   case 127:
 
 /* Line 1455 of yacc.c  */
-#line 321 "parser.y"
+#line 322 "parser.y"
     {
 	validateExistenceAndIsNotPrimitve(getNameFromDataAccess((yyvsp[(1) - (1)].stype)));
 ;}
@@ -2359,7 +2359,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 326 "parser.y"
+#line 327 "parser.y"
 
 void yyerror(char* s) {}
 

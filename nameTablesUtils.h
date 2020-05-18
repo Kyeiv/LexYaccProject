@@ -10,7 +10,7 @@
 
 #define NULL 0
 #define NUMERICAL "numerical"
-#define CHARACTERS "char"
+#define CHARACTERS "string"
 #define LOGICAL "bool"
 #define VOIDD "void"
 #define NONE "none"
