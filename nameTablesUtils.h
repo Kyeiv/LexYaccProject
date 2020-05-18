@@ -135,7 +135,9 @@ char* getNameFromDataAccess(char* text) {
 void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 {
 	if (isLocalVariable || isHeaderFunction || nestedForNumber > 0) { //if local variable or declare variable in (header function or for statement)
-		incrementLocalVariableNumber(localVariableStack);
+		if (nameOrigin != FUNC) {
+			incrementLocalVariableNumber(localVariableStack);
+		}
 	}
 
 	setProperOperants(nameOrigin);

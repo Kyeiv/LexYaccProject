@@ -95,7 +95,7 @@ block_of_code: {
 }
 ;
 function: numerical_type_variable  NAME { setLastFunctionType(NUMERICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
-	validateEndOfFunction();
+	validateEndOfFunction();	
 	handleNewName($2, NUMERICAL, FUNC);
 }
 | characters_type_variable  NAME { setLastFunctionType(CHARACTERS); handleFunctionHeader();} '(' function_variables ')' block_of_code { 
@@ -282,6 +282,11 @@ NAME'=''='STRING_VALUE {
 		nameExistsInOrigin($1, VAR);
 	}
 }
+|  NAME'=''='expression  { 
+	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed!!!
+	isAssigned = false;
+}
+;
 
 not_equal_comparision: 
 NAME'!''='STRING_VALUE { 
