@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "NameOrigin.h"
+#include "LineCountStack.h"
 #include "Stack.h"
 
 #define NULL 0
@@ -57,8 +58,9 @@ int rightBracket = 0; //number of ending block of code
 bool isHeaderFunction; //check if header function
 int nestedForNumber = 0; //number of nested for
 
-void initStack() {
+void initStack(char* filename) {
 	localVariableStack = newStack(1000);
+	initStackNewLineCounter(filename);
 }
 
 void setProperOperants(enum NameOrigin nameOrigin)

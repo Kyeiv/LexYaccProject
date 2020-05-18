@@ -3,6 +3,7 @@
 %{
 	#include <stdlib.h> 
 	#include "parser.h"
+
 	YY_BUFFER_STATE stos[100];
     int nBufor = 0;
 	int line=0;
@@ -27,8 +28,9 @@ protected: { return VISIBILITY; }
 yylval.stype=strdup(yytext); 
 //return INCLUDE; 
 		char* name = handleInclude(strdup(yytext));
+		addLineCounter(name);
 		stos[nBufor++] = YY_CURRENT_BUFFER;  
-		yyin = fopen(name, "r");     
+		yyin = fopen(name, "r"); 
 		yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
 		//BEGIN(INITIAL);    
 }
@@ -40,9 +42,10 @@ yylval.stype=strdup(yytext);
 \".*\" { yylval.stype = yytext[0]; return STRING_VALUE; }
 [a-zA-Z_$][a-zA-Z_$0-9]*"."[a-zA-Z_$][a-zA-Z_$0-9()*]* { yylval.stype=strdup(yytext); return DATA_ACCESS; }
 [a-zA-Z_$][a-zA-Z_$0-9]* { yylval.stype=strdup(yytext); return NAME; }
-[\n]	{ incrementLineCount(); return '\n';}
+[\n]	{ incrementCurrentLines(); return '\n';}
 
-<<EOF>>   {    
+<<EOF>>   {  
+	popLineCounter();
 	if(nBufor == 0)    
 	{     
 		yyterminate();   

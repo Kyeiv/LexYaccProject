@@ -454,10 +454,11 @@ char *yytext;
 #line 4 "lekser.l"
 	#include <stdlib.h> 
 	#include "parser.h"
+
 	YY_BUFFER_STATE stos[100];
     int nBufor = 0;
 	int line=0;
-#line 461 "lekser.c"
+#line 462 "lekser.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -608,9 +609,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 10 "lekser.l"
+#line 11 "lekser.l"
 
-#line 614 "lekser.c"
+#line 615 "lekser.c"
 
 	if ( yy_init )
 		{
@@ -695,135 +696,137 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "lekser.l"
+#line 12 "lekser.l"
 { return DOUBLE; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "lekser.l"
+#line 13 "lekser.l"
 { return STRING; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "lekser.l"
+#line 14 "lekser.l"
 { return INT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "lekser.l"
+#line 15 "lekser.l"
 { return BOOL; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "lekser.l"
+#line 16 "lekser.l"
 { return TRUE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "lekser.l"
+#line 17 "lekser.l"
 { return FALSE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "lekser.l"
+#line 18 "lekser.l"
 { return IF; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 18 "lekser.l"
+#line 19 "lekser.l"
 { return ELSE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 19 "lekser.l"
+#line 20 "lekser.l"
 { return VOID; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 20 "lekser.l"
+#line 21 "lekser.l"
 { return RETURN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 21 "lekser.l"
+#line 22 "lekser.l"
 { return FOR; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 22 "lekser.l"
+#line 23 "lekser.l"
 { return CLASS_DECL; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 23 "lekser.l"
+#line 24 "lekser.l"
 { return VISIBILITY; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 24 "lekser.l"
+#line 25 "lekser.l"
 { return VISIBILITY; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 25 "lekser.l"
+#line 26 "lekser.l"
 { return VISIBILITY; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 26 "lekser.l"
+#line 27 "lekser.l"
 { 
 yylval.stype=strdup(yytext); 
 //return INCLUDE; 
 		char* name = handleInclude(strdup(yytext));
+		addLineCounter(name);
 		stos[nBufor++] = YY_CURRENT_BUFFER;  
-		yyin = fopen(name, "r");     
+		yyin = fopen(name, "r"); 
 		yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
 		//BEGIN(INITIAL);    
 }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 35 "lekser.l"
+#line 37 "lekser.l"
 { }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 37 "lekser.l"
+#line 39 "lekser.l"
 {yylval.stype = yytext[0]; return SEMICOLON; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 38 "lekser.l"
+#line 40 "lekser.l"
 { yylval.dtype = atoi(yytext); return NUMBER; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 39 "lekser.l"
+#line 41 "lekser.l"
 return yytext[0];
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 40 "lekser.l"
+#line 42 "lekser.l"
 { yylval.stype = yytext[0]; return STRING_VALUE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 41 "lekser.l"
+#line 43 "lekser.l"
 { yylval.stype=strdup(yytext); return DATA_ACCESS; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 42 "lekser.l"
+#line 44 "lekser.l"
 { yylval.stype=strdup(yytext); return NAME; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 43 "lekser.l"
-{ incrementLineCount(); return '\n';}
+#line 45 "lekser.l"
+{ incrementCurrentLines(); return '\n';}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 45 "lekser.l"
-{    
+#line 47 "lekser.l"
+{  
+	popLineCounter();
 	if(nBufor == 0)    
 	{     
 		yyterminate();   
@@ -837,10 +840,10 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 56 "lekser.l"
+#line 59 "lekser.l"
 ECHO;
 	YY_BREAK
-#line 844 "lekser.c"
+#line 847 "lekser.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1724,4 +1727,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 56 "lekser.l"
+#line 59 "lekser.l"

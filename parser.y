@@ -45,7 +45,7 @@
 %%
 program: program instruction		{ printf("dobre wyr c++ \n"); 
 }
-	| error '\n'					{ yyerror("Obsluga bledu"); yyerrok;}
+	| error '\n'					{  printf("ERROR file %s line %d \n", getCurrentFileName(), getCurrentLines()); yyerror("Obsluga bledu"); yyerrok;}
 	|
 	;
 expression: NUMBER { 
@@ -334,8 +334,10 @@ void yyerror(char *s) {
 }
 
 int main(void) {
-	initStack();
-	yyin = fopen("src.txt", "r");
+	char* initFileName = "src.txt";
+	initStack(initFileName);
+	yyin = fopen(initFileName, "r");
 	yyparse();
+	cleanStack();
 	return 0;
 }

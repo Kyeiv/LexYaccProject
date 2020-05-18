@@ -1596,7 +1596,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 48 "parser.y"
-    { yyerror("Obsluga bledu"); yyerrok;;}
+    {  printf("ERROR file %s line %d \n", getCurrentFileName(), getCurrentLines()); yyerror("Obsluga bledu"); yyerrok;;}
     break;
 
   case 5:
@@ -2354,8 +2354,10 @@ void yyerror(char *s) {
 }
 
 int main(void) {
-	initStack();
-	yyin = fopen("src.txt", "r");
+	char* initFileName = "src.txt";
+	initStack(initFileName);
+	yyin = fopen(initFileName, "r");
 	yyparse();
+	cleanStack();
 	return 0;
 }
