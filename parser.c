@@ -504,19 +504,19 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    46,    46,    48,    49,    51,    54,    57,    60,    61,
-      62,    63,    64,    67,    68,    69,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    85,    85,    93,
-      93,    98,    98,   102,   102,   106,   106,   112,   115,   116,
+       0,    46,    46,    51,    55,    57,    60,    63,    66,    67,
+      68,    69,    70,    73,    74,    75,    78,    79,    80,    81,
+      82,    83,    84,    85,    86,    87,    88,    91,    91,    97,
+      97,   101,   101,   104,   104,   107,   107,   112,   115,   116,
      117,   118,   119,   122,   123,   124,   127,   128,   129,   130,
-     131,   132,   133,   136,   136,   142,   143,   146,   146,   152,
-     153,   154,   155,   157,   158,   159,   161,   162,   163,   164,
-     165,   167,   168,   169,   170,   171,   174,   175,   177,   180,
-     183,   186,   189,   192,   196,   199,   205,   208,   211,   215,
-     220,   225,   230,   235,   238,   241,   245,   250,   251,   252,
-     253,   254,   259,   260,   261,   264,   267,   268,   272,   275,
-     278,   279,   280,   281,   293,   296,   299,   300,   301,   311,
-     312,   315,   318,   320,   322,   323,   326
+     131,   132,   133,   136,   136,   141,   142,   145,   145,   151,
+     152,   153,   154,   156,   157,   158,   160,   161,   162,   163,
+     164,   166,   167,   168,   169,   170,   173,   174,   176,   179,
+     182,   185,   188,   191,   195,   198,   204,   207,   210,   214,
+     219,   224,   229,   234,   237,   240,   244,   249,   250,   251,
+     252,   253,   258,   259,   260,   263,   266,   267,   271,   274,
+     277,   278,   279,   280,   287,   290,   293,   294,   295,   301,
+     302,   305,   308,   310,   312,   313,   316
 };
 #endif
 
@@ -1588,21 +1588,27 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 46 "parser.y"
-    { printf("dobre wyr c++ \n"); 
+    { 
+	if (!getErrorFlag()) {
+		printf("Program correct, no errors detected\n"); 
+	}
 ;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 48 "parser.y"
-    {  printf("ERROR file %s line %d \n", getCurrentFileName(), getCurrentLines()); yyerror("Obsluga bledu"); yyerrok;;}
+#line 51 "parser.y"
+    {
+		setErrorFlag();
+		printf("SYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
+		;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 51 "parser.y"
+#line 57 "parser.y"
     { 
 	isAssigned = true;
 ;}
@@ -1611,7 +1617,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 54 "parser.y"
+#line 60 "parser.y"
     { 
 	isAssigned = handleNameInAssigning((yyvsp[(1) - (1)].stype), NUMERICAL, VAR); 
 ;}
@@ -1620,7 +1626,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 57 "parser.y"
+#line 63 "parser.y"
     {
 	isAssigned = true;
 ;}
@@ -1629,65 +1635,64 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 60 "parser.y"
+#line 66 "parser.y"
     { ;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 61 "parser.y"
+#line 67 "parser.y"
     { ;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 62 "parser.y"
+#line 68 "parser.y"
     { ;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 63 "parser.y"
+#line 69 "parser.y"
     { ;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 64 "parser.y"
+#line 70 "parser.y"
     { nameInTypeExistsInOrigin(getUsedFunctionName(), NUMERICAL, FUNC); setUsedFunctionName(NONE); ;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 80 "parser.y"
+#line 86 "parser.y"
     { checkIfInClass(); ;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 81 "parser.y"
+#line 87 "parser.y"
     { nameExistsInOrigin(getUsedFunctionName(), FUNC); setUsedFunctionName(NONE); ;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 82 "parser.y"
+#line 88 "parser.y"
     { handleInclude((yyvsp[(1) - (1)].stype)); ;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 85 "parser.y"
+#line 91 "parser.y"
     {	
-	//printf ("setFlagLocalVariable \n"); 
 	startedBlockOfCode();
 ;}
     break;
@@ -1695,9 +1700,8 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 88 "parser.y"
+#line 93 "parser.y"
     {
-	//printf ("endedBlockOfCode \n"); 
 	endedBlockOfCode();
 ;}
     break;
@@ -1705,16 +1709,15 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 93 "parser.y"
-    { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); handleFunctionHeader(); ;}
+#line 97 "parser.y"
+    { setLastFunctionType(NUMERICAL); handleFunctionHeader(); ;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 93 "parser.y"
+#line 97 "parser.y"
     { 
-	printf("numerical func \n"); 
 	validateEndOfFunction();
 	handleNewName((yyvsp[(2) - (7)].stype), NUMERICAL, FUNC);
 ;}
@@ -1723,16 +1726,15 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 98 "parser.y"
-    { printf("stringFuncBEg \n"); setLastFunctionType(CHARACTERS); handleFunctionHeader();;}
+#line 101 "parser.y"
+    { setLastFunctionType(CHARACTERS); handleFunctionHeader();;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 98 "parser.y"
+#line 101 "parser.y"
     { 
-	printf("string func \n"); 
 	handleNewName((yyvsp[(2) - (7)].stype), CHARACTERS, FUNC);
 ;}
     break;
@@ -1740,16 +1742,15 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 102 "parser.y"
-    { printf("boolFuncBEg \n"); setLastFunctionType(LOGICAL); handleFunctionHeader(); ;}
+#line 104 "parser.y"
+    { setLastFunctionType(LOGICAL); handleFunctionHeader(); ;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 102 "parser.y"
+#line 104 "parser.y"
     { 
-	printf("bool func \n"); 
 	handleNewName((yyvsp[(2) - (7)].stype), LOGICAL, FUNC);
 ;}
     break;
@@ -1757,16 +1758,15 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 106 "parser.y"
-    { printf("voidFuncBEg \n"); setLastFunctionType(VOIDD); handleFunctionHeader();;}
+#line 107 "parser.y"
+    { setLastFunctionType(VOIDD); handleFunctionHeader();;}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 106 "parser.y"
+#line 107 "parser.y"
     {
-	printf("void func \n"); 
 	handleNewName((yyvsp[(2) - (7)].stype), VOIDD, FUNC);
 ;}
     break;
@@ -1839,7 +1839,6 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 136 "parser.y"
     {
-	printf("class \n");
 	setClassFlag(false);
 	;}
     break;
@@ -1847,7 +1846,7 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 146 "parser.y"
+#line 145 "parser.y"
     { 
 	handleForStatement();
 	;}
@@ -1856,7 +1855,7 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 177 "parser.y"
+#line 176 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (2)].stype), NUMERICAL, VAR);
 ;}
@@ -1865,7 +1864,7 @@ yyreduce:
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 180 "parser.y"
+#line 179 "parser.y"
     { 
 	handleNewName((yyvsp[(2) - (2)].stype), CHARACTERS, VAR);
 ;}
@@ -1874,7 +1873,7 @@ yyreduce:
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 183 "parser.y"
+#line 182 "parser.y"
     { 
 	handleNewName((yyvsp[(2) - (2)].stype), LOGICAL, VAR);
 ;}
@@ -1883,7 +1882,7 @@ yyreduce:
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 186 "parser.y"
+#line 185 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (2)].stype), (yyvsp[(1) - (2)].stype), CLASS);
 ;}
@@ -1892,7 +1891,7 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 189 "parser.y"
+#line 188 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), CHARACTERS, VAR);
 ;}
@@ -1901,7 +1900,7 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 192 "parser.y"
+#line 191 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), CHARACTERS, VAR);
 	nameInTypeExistsInOrigin(getUsedFunctionName(), CHARACTERS, FUNC); setUsedFunctionName(NONE);
@@ -1911,7 +1910,7 @@ yyreduce:
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 196 "parser.y"
+#line 195 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), CHARACTERS, VAR);
 ;}
@@ -1920,7 +1919,7 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 199 "parser.y"
+#line 198 "parser.y"
     {
 	if (isAssigned) {
 		handleNewName((yyvsp[(2) - (4)].stype), NUMERICAL, VAR); 
@@ -1932,7 +1931,7 @@ yyreduce:
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 205 "parser.y"
+#line 204 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), LOGICAL, VAR); 
 ;}
@@ -1941,7 +1940,7 @@ yyreduce:
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 208 "parser.y"
+#line 207 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), LOGICAL, VAR); 
 ;}
@@ -1950,7 +1949,7 @@ yyreduce:
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 211 "parser.y"
+#line 210 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), LOGICAL, VAR); 
 	nameInTypeExistsInOrigin(getUsedFunctionName(), LOGICAL, FUNC); setUsedFunctionName(NONE);
@@ -1960,7 +1959,7 @@ yyreduce:
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 215 "parser.y"
+#line 214 "parser.y"
     {
 	if (handleNameInAssigning((yyvsp[(4) - (4)].stype), LOGICAL, VAR)) {
 		handleNewName((yyvsp[(2) - (4)].stype), LOGICAL, VAR); 
@@ -1971,7 +1970,7 @@ yyreduce:
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 220 "parser.y"
+#line 219 "parser.y"
     {
 	if (handleNameInAssigning((yyvsp[(4) - (4)].stype), CHARACTERS, VAR)) {
 		handleNewName((yyvsp[(2) - (4)].stype), CHARACTERS, VAR); 
@@ -1982,7 +1981,7 @@ yyreduce:
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 225 "parser.y"
+#line 224 "parser.y"
     {
 	if (handleNameInAssigning((yyvsp[(4) - (4)].stype), (yyvsp[(1) - (4)].stype), VAR)) {
 		handleNewName((yyvsp[(2) - (4)].stype), (yyvsp[(1) - (4)].stype), CLASS);
@@ -1993,7 +1992,7 @@ yyreduce:
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 230 "parser.y"
+#line 229 "parser.y"
     {
 	handleNewName((yyvsp[(2) - (4)].stype), (yyvsp[(1) - (4)].stype), CLASS);
 ;}
@@ -2002,7 +2001,7 @@ yyreduce:
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 235 "parser.y"
+#line 234 "parser.y"
     { 
 	handleNameInAssigning((yyvsp[(1) - (3)].stype), CHARACTERS, VAR);  
 ;}
@@ -2011,7 +2010,7 @@ yyreduce:
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 238 "parser.y"
+#line 237 "parser.y"
     {
 	validateTwoAssigningOperants((yyvsp[(1) - (3)].stype), (yyvsp[(3) - (3)].stype), VAR)
 ;}
@@ -2020,7 +2019,7 @@ yyreduce:
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 241 "parser.y"
+#line 240 "parser.y"
     {
 	nameInTypeExistsInOrigin((yyvsp[(1) - (3)].stype), NUMERICAL, VAR); //only 'int' type is allowed
 	isAssigned = false;
@@ -2030,7 +2029,7 @@ yyreduce:
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 245 "parser.y"
+#line 244 "parser.y"
     {
 	if (handleNameInAssigning((yyvsp[(1) - (3)].stype), LOGICAL, VAR)) {
 		nameExistsInOrigin((yyvsp[(1) - (3)].stype), VAR);
@@ -2041,7 +2040,7 @@ yyreduce:
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 254 "parser.y"
+#line 253 "parser.y"
     {
 	nameExistsInOrigin((yyvsp[(1) - (1)].stype), VAR);
 ;}
@@ -2050,7 +2049,7 @@ yyreduce:
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 261 "parser.y"
+#line 260 "parser.y"
     {
 	nameInTypeExistsInOrigin((yyvsp[(1) - (1)].stype), LOGICAL, VAR); //only 'bool' type is allowed
 ;}
@@ -2059,7 +2058,7 @@ yyreduce:
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 264 "parser.y"
+#line 263 "parser.y"
     {
 	nameInTypeExistsInOrigin((yyvsp[(2) - (2)].stype), LOGICAL, VAR); //only 'bool' type is allowed
 ;}
@@ -2068,7 +2067,7 @@ yyreduce:
   case 108:
 
 /* Line 1455 of yacc.c  */
-#line 272 "parser.y"
+#line 271 "parser.y"
     { 
 	handleNameInAssigning((yyvsp[(1) - (4)].stype), CHARACTERS, VAR);
 ;}
@@ -2077,7 +2076,7 @@ yyreduce:
   case 109:
 
 /* Line 1455 of yacc.c  */
-#line 275 "parser.y"
+#line 274 "parser.y"
     {
 	validateTwoAssigningOperants((yyvsp[(1) - (4)].stype), (yyvsp[(4) - (4)].stype), VAR)
 ;}
@@ -2086,7 +2085,7 @@ yyreduce:
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 281 "parser.y"
+#line 280 "parser.y"
     {
 	if (handleNameInAssigning((yyvsp[(1) - (4)].stype), LOGICAL, VAR)) {
 		nameExistsInOrigin((yyvsp[(1) - (4)].stype), VAR);
@@ -2097,7 +2096,7 @@ yyreduce:
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 293 "parser.y"
+#line 287 "parser.y"
     { 
 	handleNameInAssigning((yyvsp[(1) - (4)].stype), CHARACTERS, VAR);
 ;}
@@ -2106,7 +2105,7 @@ yyreduce:
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 296 "parser.y"
+#line 290 "parser.y"
     {
 	validateTwoAssigningOperants((yyvsp[(1) - (4)].stype), (yyvsp[(4) - (4)].stype), VAR)
 ;}
@@ -2115,7 +2114,7 @@ yyreduce:
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 301 "parser.y"
+#line 295 "parser.y"
     {
 	if (handleNameInAssigning((yyvsp[(1) - (4)].stype), LOGICAL, VAR)) {
 		nameExistsInOrigin((yyvsp[(1) - (4)].stype), VAR);
@@ -2126,7 +2125,7 @@ yyreduce:
   case 126:
 
 /* Line 1455 of yacc.c  */
-#line 326 "parser.y"
+#line 316 "parser.y"
     {
 	validateExistenceAndIsNotPrimitve(getNameFromDataAccess((yyvsp[(1) - (1)].stype)));
 ;}
@@ -2135,7 +2134,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2139 "parser.c"
+#line 2138 "parser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2347,16 +2346,14 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 331 "parser.y"
+#line 321 "parser.y"
 
-void yyerror(char *s) {
-	fprintf(stderr, "%s\n", s);
-}
+void yyerror(char* s) {}
 
 int main(void) {
-	char* initFileName = "src.txt";
+	char* initFileName = "src.cpp";
 	initStack(initFileName);
-	yyin = fopen(initFileName, "r");
+	yyin = fopen(concat(getPath(), initFileName), "r");
 	yyparse();
 	cleanStack();
 	return 0;

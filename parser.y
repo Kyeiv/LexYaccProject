@@ -43,9 +43,15 @@
 %token <stype>DATA_ACCESS
 %token <stype>INCLUDE
 %%
-program: program instruction		{ printf("dobre wyr c++ \n"); 
+program: program instruction { 
+	if (!getErrorFlag()) {
+		printf("Program correct, no errors detected\n"); 
+	}
 }
-	| error '\n'					{  printf("ERROR file %s line %d \n", getCurrentFileName(), getCurrentLines()); yyerror("Obsluga bledu"); yyerrok;}
+	| error '\n' {
+		setErrorFlag();
+		printf("SYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
+		}
 	|
 	;
 expression: NUMBER { 
@@ -83,28 +89,22 @@ single_instruction: if_instruction
 ;
 
 block_of_code: {	
-	//printf ("setFlagLocalVariable \n"); 
 	startedBlockOfCode();
 } '{' instruction '}' {
-	//printf ("endedBlockOfCode \n"); 
 	endedBlockOfCode();
 }
 ;
-function: numerical_type_variable  NAME { printf("numFuncBEg \n"); setLastFunctionType(NUMERICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
-	printf("numerical func \n"); 
+function: numerical_type_variable  NAME { setLastFunctionType(NUMERICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
 	validateEndOfFunction();
 	handleNewName($2, NUMERICAL, FUNC);
 }
-| characters_type_variable  NAME { printf("stringFuncBEg \n"); setLastFunctionType(CHARACTERS); handleFunctionHeader();} '(' function_variables ')' block_of_code { 
-	printf("string func \n"); 
+| characters_type_variable  NAME { setLastFunctionType(CHARACTERS); handleFunctionHeader();} '(' function_variables ')' block_of_code { 
 	handleNewName($2, CHARACTERS, FUNC);
 }
-| logical_type_variable  NAME { printf("boolFuncBEg \n"); setLastFunctionType(LOGICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
-	printf("bool func \n"); 
+| logical_type_variable  NAME { setLastFunctionType(LOGICAL); handleFunctionHeader(); } '(' function_variables ')' block_of_code { 
 	handleNewName($2, LOGICAL, FUNC);
 }
-| void_type NAME { printf("voidFuncBEg \n"); setLastFunctionType(VOIDD); handleFunctionHeader();} '(' function_variables ')' block_of_code{
-	printf("void func \n"); 
+| void_type NAME { setLastFunctionType(VOIDD); handleFunctionHeader();} '(' function_variables ')' block_of_code{
 	handleNewName($2, VOIDD, FUNC);
 }
 ;
@@ -134,7 +134,6 @@ return_statement: RETURN { validateReturn(VOIDD) }
 ;
 
 class_declaration: CLASS_DECL NAME { setClassFlag(true); handleNewName($2, NONE, CLASS);} block_of_code {
-	printf("class \n");
 	setClassFlag(false);
 	}
 ;
@@ -284,11 +283,6 @@ NAME'=''='STRING_VALUE {
 	}
 }
 
-//|  NAME'=''='expression  { 
-//	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed!!!
-//	isAssigned = false;
-//}
-
 not_equal_comparision: 
 NAME'!''='STRING_VALUE { 
 	handleNameInAssigning($1, CHARACTERS, VAR);
@@ -303,10 +297,6 @@ NAME'!''='STRING_VALUE {
 		nameExistsInOrigin($1, VAR);
 	}
 }
-//|  NAME'!''='expression  { 
-//	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed!!!
-//	isAssigned = false;
-//}
 
 numerical_type_variable:  DOUBLE
 | INT
@@ -329,14 +319,12 @@ object_access: DATA_ACCESS {
 ;
 
 %%
-void yyerror(char *s) {
-	fprintf(stderr, "%s\n", s);
-}
+void yyerror(char* s) {}
 
 int main(void) {
-	char* initFileName = "src.txt";
+	char* initFileName = "src.cpp";
 	initStack(initFileName);
-	yyin = fopen(initFileName, "r");
+	yyin = fopen(concat(getPath(), initFileName), "r");
 	yyparse();
 	cleanStack();
 	return 0;

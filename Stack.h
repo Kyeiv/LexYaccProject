@@ -39,12 +39,10 @@ void push(struct stack *pt)
 {
 	if (isFull(pt))
 	{
-		//printf("OverFlow\nProgram Terminated\n");
 		exit(EXIT_FAILURE);
 	}
 
 	pt->items[++pt->top] = 0;
-	//printf("Inserting number of block %d\n", pt->top);
 }
 
 int getNumberOfLocalVariable(struct stack *pt)
@@ -61,11 +59,9 @@ void pop(struct stack *pt)
 	// check for stack underflow
 	if (isEmpty(pt))
 	{
-		//printf("UnderFlow\nProgram Terminated\n");
 		exit(EXIT_FAILURE);
 	}
 
-	//printf("Removing blockNr: %d, localVariableNr: %d\n", pt->top, pt->items[pt->top]);
 
 	pt->items[pt->top--];
 }
@@ -75,22 +71,10 @@ void incrementLocalVariableNumber(struct stack *pt)
 	// check if stack is already full.
 	if (isFull(pt))
 	{
-		//printf("OverFlow\nProgram Terminated\n");
 		exit(EXIT_FAILURE);
 	}
 	int nr = pt->items[pt->top] + 1;
-	//printf("Number of local variable: %d in block nr: %d\n", nr, pt->top);
 
 	//overwrite existing value
 	pt->items[pt->top] = nr;
-}
-
-void checkIsEmpty(struct stack *pt) {
-	if (isEmpty(pt))
-	{
-		printf("Stack Empty\n");
-	}
-	else {
-		printf("Stack is not Empty\n");
-	}
 }

@@ -26,13 +26,11 @@ private: { return VISIBILITY; }
 protected: { return VISIBILITY; }
 "#include "\"[a-zA-Z]+".h"\" { 
 yylval.stype=strdup(yytext); 
-//return INCLUDE; 
 		char* name = handleInclude(strdup(yytext));
 		addLineCounter(name);
-		stos[nBufor++] = YY_CURRENT_BUFFER;  
-		yyin = fopen(name, "r"); 
+		stos[nBufor++] = YY_CURRENT_BUFFER; 
+		yyin = fopen(concat(getPath(), name), "r"); 
 		yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
-		//BEGIN(INITIAL);    
 }
 "#include <"[a-zA-Z]+".h>" { }
 
