@@ -162,7 +162,7 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 		return;
 	}
 	
-	if (nameOrigin != FUNC && isClassBlock) {
+	if (nameOrigin != FUNC || (nameOrigin == FUNC && !isClassBlock)) {
 		names[*countNames] = Variable_new(name, type);
 		*countNames = *countNames + 1;
 	}
