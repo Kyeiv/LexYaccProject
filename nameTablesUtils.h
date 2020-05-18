@@ -161,8 +161,12 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 		isError = true;
 		return;
 	}
-	names[*countNames] = Variable_new(name, type);
-	*countNames = *countNames + 1;
+	
+	if (nameOrigin != FUNC && isClassBlock) {
+		names[*countNames] = Variable_new(name, type);
+		*countNames = *countNames + 1;
+	}
+
 }
 
 bool handleNameInAssigning(char* variableName, char* type, enum NameOrigin nameOrigin)
