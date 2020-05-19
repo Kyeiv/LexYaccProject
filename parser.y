@@ -49,16 +49,12 @@ program: instruction {
 		printf("Program correct, no errors detected\n");	
 	}
 }
-	| error '\n' {
-		setErrorFlag();
-		printf("\rSYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
-		}
 	|
 	;
 
-
 instruction: single_instruction
 | instruction instruction
+| error '\n' { yyerrok; }
 | '\n'
 ;
 
@@ -314,7 +310,10 @@ expression: NUMBER {
 ;
 
 %%
-void yyerror(char* s) {}
+void yyerror(char* s) {
+		setErrorFlag();
+		printf("\rSYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
+}
 
 int main(void) {
 	char* initFileName = "src.cpp";
