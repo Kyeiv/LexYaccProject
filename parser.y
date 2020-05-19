@@ -45,12 +45,13 @@
 %%
 program: instruction { 
 	if (!getErrorFlag()) {
-		printf("Program correct, no errors detected\n"); 
+		system("cls");
+		printf("Program correct, no errors detected\n");	
 	}
 }
 	| error '\n' {
 		setErrorFlag();
-		printf("SYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
+		printf("\rSYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
 		}
 	|
 	;

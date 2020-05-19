@@ -386,6 +386,9 @@ bool getErrorFlag() {
 }
 
 void setErrorFlag() {
+	if (!isError) {
+		system("cls");
+	}
 	isError = true;
 }
 
