@@ -43,7 +43,7 @@
 %token <stype>DATA_ACCESS
 %token <stype>INCLUDE
 %%
-program: program instruction { 
+program: instruction { 
 	if (!getErrorFlag()) {
 		printf("Program correct, no errors detected\n"); 
 	}
