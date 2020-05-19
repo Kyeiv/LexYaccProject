@@ -10,7 +10,10 @@ int main() {
 			if (boolean) {
 				retValue = retValue + 5;
 			}
+			i = j;
 		}
+		j = 12;
+		asdasd;
 	}
 	if (retValue >= 100) {
 		retValue = 100;

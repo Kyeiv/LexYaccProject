@@ -322,5 +322,6 @@ int main(void) {
 	yyin = fopen(concat(getPath(), initFileName), "r");
 	yyparse();
 	cleanStack();
+	printf("\r");
 	return 0;
 }

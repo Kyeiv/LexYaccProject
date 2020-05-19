@@ -132,6 +132,13 @@ char* getNameFromDataAccess(char* text) {
 		}
 	}
 }
+void setErrorFlag() {
+	if (!isError) {
+		system("cls");
+	}
+	isError = true;
+}
+
 void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 {
 	if (isLocalVariable || isHeaderFunction || nestedForNumber > 0) { //if local variable or declare variable in (header function or for statement)
@@ -147,8 +154,8 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 	{
 		if (!nameExists(type))
 		{
-			printf("ERROR: class '%s' not found! In file '%s', line: %d\n", type, getCurrentFileName(), getCurrentLines());
-			isError = true;
+			setErrorFlag();
+			printf("\rERROR: class '%s' not found! In file '%s', line: %d\n", type, getCurrentFileName(), getCurrentLines());
 			return;
 		}
 		nameOrigin = VAR;
@@ -157,8 +164,8 @@ void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
 
 	if (nameExists(name))
 	{
-		printf("ERROR: %s '%s' already exist! In file '%s', line: %d\n", getNameOriginString(nameOrigin), name, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: %s '%s' already exist! In file '%s', line: %d\n", getNameOriginString(nameOrigin), name, getCurrentFileName(), getCurrentLines());
 		return;
 	}
 	
@@ -174,8 +181,8 @@ bool handleNameInAssigning(char* variableName, char* type, enum NameOrigin nameO
 	setProperOperants(nameOrigin);
 	if (!nameInTypeExists(variableName, type))
 	{
-		printf("ERROR: %s '%s' of '%s' type doesn't exist! In file '%s', line: %d\n", getNameOriginString(nameOrigin), variableName, type, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: %s '%s' of '%s' type doesn't exist! In file '%s', line: %d\n", getNameOriginString(nameOrigin), variableName, type, getCurrentFileName(), getCurrentLines());
 		return false;
 	}
 	else
@@ -191,8 +198,8 @@ void nameExistsInOrigin(char* name, enum NameOrigin nameOrigin) {
 	if (nameExists(name)) {
 		return true;
 	}
-	printf("ERROR: %s '%s' doesn't exist! In file '%s', line: %d\n", getNameOriginString(nameOrigin), name, getCurrentFileName(), getCurrentLines());
-	isError = true;
+	setErrorFlag();
+	printf("\rERROR: %s '%s' doesn't exist! In file '%s', line: %d\n", getNameOriginString(nameOrigin), name, getCurrentFileName(), getCurrentLines());
 	return false;
 }
 
@@ -202,8 +209,8 @@ void nameExistsInOrigin(char* name, enum NameOrigin nameOrigin) {
 void nameInTypeExistsInOrigin(char* name, char* type, enum NameOrigin nameOrigin) {
 	setProperOperants(nameOrigin);
 	if (!nameInTypeExists(name, type)) {
-		printf("ERROR: %s '%s' of '%s' type doesn't exist! In file '%s', line: %d \n", getNameOriginString(nameOrigin), name, type, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: %s '%s' of '%s' type doesn't exist! In file '%s', line: %d \n", getNameOriginString(nameOrigin), name, type, getCurrentFileName(), getCurrentLines());
 	}
 }
 
@@ -215,16 +222,16 @@ void validateTwoAssigningOperants(char* name1, char* name2, enum NameOrigin name
 	struct TypedName* typedName2 = getTypedName(name2);
 
 	if (typedName1 == NULL) {
-		printf("ERRORc: %s %s doesn't exist! In file '%s', line: %d \n", getNameOriginString(nameOrigin), name1, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERRORc: %s %s doesn't exist! In file '%s', line: %d \n", getNameOriginString(nameOrigin), name1, getCurrentFileName(), getCurrentLines());
 	}
 	if (typedName2 == NULL) {
-		printf("ERRORc: %s %s doesn't exist %s:%d \n", getNameOriginString(nameOrigin), name2, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERRORc: %s %s doesn't exist %s:%d \n", getNameOriginString(nameOrigin), name2, getCurrentFileName(), getCurrentLines());
 	}
 	if (typedName1 != NULL && typedName2 != NULL && strcmp(typedName1->type, typedName2->type) != 0) {
-		printf("ERRORc: Types missmatch! Cannot assigned '%s' to '%s'. In file '%s', line: %d \n", typedName1->type, typedName2->type, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERRORc: Types missmatch! Cannot assigned '%s' to '%s'. In file '%s', line: %d \n", typedName1->type, typedName2->type, getCurrentFileName(), getCurrentLines());
 	}
 }
 
@@ -236,14 +243,14 @@ void setLastFunctionType(char* type)
 void validateReturn(char* type)
 {
 	if (strcmp(lastFunctionType, NONE) == 0) {
-		printf("ERROR: Cannot return without function! In file '%s', line: %d \n", getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: Cannot return without function! In file '%s', line: %d \n", getCurrentFileName(), getCurrentLines());
 		return;
 	}
 
 	if (strcmp(lastFunctionType, type) != 0) {
-		printf("ERROR: Types missmatch! Cannot return %s in %s function! In file '%s', line: %d \n", type, lastFunctionType, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: Types missmatch! Cannot return %s in %s function! In file '%s', line: %d \n", type, lastFunctionType, getCurrentFileName(), getCurrentLines());
 	}
 	else {
 		wasReturnStatement = true;
@@ -255,8 +262,8 @@ void validateReturnWithVarName(char* name)
 	struct TypedName* var = getTypedName(name);
 	if (var == NULL)
 	{
-		printf("ERROR: no previous declaration of return variable '%s'! In file '%s', line: %d \n", name, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: no previous declaration of return variable '%s'! In file '%s', line: %d \n", name, getCurrentFileName(), getCurrentLines());
 	}
 	else
 	{
@@ -269,8 +276,8 @@ void validateEndOfFunction()
 	if (strcmp(lastFunctionType, NONE) != 0 && strcmp(lastFunctionType, VOIDD) != 0)
 	{
 		if (!wasReturnStatement) {
-			printf("ERROR: No return statement at the end of %s function! In file '%s', line: %d \n", lastFunctionType, getCurrentFileName(), getCurrentLines());
-			isError = true;
+			setErrorFlag();
+			printf("\rERROR: No return statement at the end of %s function! In file '%s', line: %d \n", lastFunctionType, getCurrentFileName(), getCurrentLines());
 		}
 	}
 	wasReturnStatement = false;
@@ -285,8 +292,8 @@ void setClassFlag(bool flag) {
 
 void checkIfInClass() {
 	if (!isClassBlock) {
-		printf("ERROR: visibility identifier can only be declared in classes! In file '%s', line: %d \n", getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: visibility identifier can only be declared in classes! In file '%s', line: %d \n", getCurrentFileName(), getCurrentLines());
 	}
 }
 
@@ -344,14 +351,14 @@ void validateExistenceAndIsNotPrimitve(char* name) {
 	setProperOperants(VAR);
 	struct TypedName* typedName = getTypedName(name);
 	if (typedName == NULL) {
-		printf("ERROR: variable '%s' doesn't exist! In file '%s', line: %d \n", name, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR: variable '%s' doesn't exist! In file '%s', line: %d \n", name, getCurrentFileName(), getCurrentLines());
 	}
 }
 void isPrimitive(char* type) {
 	if (strcmp(type, NUMERICAL) == 0 || strcmp(type, CHARACTERS) == 0 || strcmp(type, LOGICAL) == 0) {
-		printf("ERROR:cannot access primitive type '%s'! In file '%s', line: %d \n", type, getCurrentFileName(), getCurrentLines());
-		isError = true;
+		setErrorFlag();
+		printf("\rERROR:cannot access primitive type '%s'! In file '%s', line: %d \n", type, getCurrentFileName(), getCurrentLines());
 	}
 }
 
@@ -385,12 +392,7 @@ bool getErrorFlag() {
 	return isError;
 }
 
-void setErrorFlag() {
-	if (!isError) {
-		system("cls");
-	}
-	isError = true;
-}
+
 
 char* concat(const char *s1, const char *s2)
 {
