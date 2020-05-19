@@ -731,7 +731,7 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 15 "lekser.l"
-{ validateStd(); return STRING; }
+{ isErrorInStd(validateStd()); return STRING; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP

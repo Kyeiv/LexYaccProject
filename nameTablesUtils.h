@@ -135,8 +135,15 @@ char* getNameFromDataAccess(char* text) {
 void setErrorFlag() {
 	if (!isError) {
 		system("cls");
+		isError = true;
 	}
-	isError = true;
+}
+
+void isErrorInStd(bool flag) {
+	if (flag) {
+		setErrorFlag();
+		printf("\rERROR: 'string' requires namespace std. \n");
+	}
 }
 
 void handleNewName(char* name, char* type, enum NameOrigin nameOrigin)
@@ -357,7 +364,6 @@ void validateExistenceAndIsNotPrimitve(char* name) {
 }
 void isPrimitive(char* type) {
 	if (strcmp(type, NUMERICAL) == 0 || strcmp(type, CHARACTERS) == 0 || strcmp(type, LOGICAL) == 0) {
-		setErrorFlag();
 		printf("\rERROR:cannot access primitive type '%s'! In file '%s', line: %d \n", type, getCurrentFileName(), getCurrentLines());
 	}
 }

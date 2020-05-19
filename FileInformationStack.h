@@ -76,10 +76,12 @@ void cleanStack()
 	}
 }
 
-void validateStd() {
+bool validateStd() {
 	if (!linesStack->usesNamespaceStd) {
-		printf("ERROR: 'string' requires namespace std. \n");
+		//printf("\rERROR: 'string' requires namespace std. \n");
+		return true;
 	}
+	return false;
 }
 
 void setUsingStd() {

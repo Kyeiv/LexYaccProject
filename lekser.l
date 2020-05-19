@@ -12,7 +12,7 @@
 double { return DOUBLE; }
 std::string { return STRING; }
 "using namespace std" { setUsingStd(); }
-string { validateStd(); return STRING; }
+string { isErrorInStd(validateStd()); return STRING; }
 int { return INT; }
 bool { return BOOL; }
 true { return TRUE; }
