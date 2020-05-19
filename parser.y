@@ -54,21 +54,7 @@ program: program instruction {
 		}
 	|
 	;
-expression: NUMBER { 
-	isAssigned = true;
-}
-|	NAME { 
-	isAssigned = handleNameInAssigning($1, NUMERICAL, VAR); 
-}
-|   object_access {
-	isAssigned = true;
-}
-|	expression'+'expression { }
-|	expression'-'expression { }
-|	expression'*'expression { }
-|	expression'/'expression { }
-|	function_usage { nameInTypeExistsInOrigin(getUsedFunctionName(), NUMERICAL, FUNC); setUsedFunctionName(NONE); }
-;
+
 
 instruction: single_instruction
 | instruction instruction
@@ -157,11 +143,14 @@ for_second_arg: expression op expression
 | expression op expression ',' expression op expression
 |;
 
+
 op: '>'
 | '<'
 | '!''='
 | '<''='
-| '>''=';
+| '>''='
+| '=''='
+;
 
 for_third_arg: NAME increase_decrease
 | increase_decrease NAME
@@ -255,8 +244,7 @@ assigning:  NAME '=' STRING_VALUE {
 }
 ;
 
-comparison:  equal_comparision
-| not_equal_comparision
+comparison:  comparison_expressions
 |  NAME {
 	nameInTypeExistsInOrigin($1, LOGICAL, VAR); //only 'bool' type is allowed
 }
@@ -267,40 +255,24 @@ comparison:  equal_comparision
 | bool_value
 ;
 
-equal_comparision:
-NAME'=''='STRING_VALUE { 
+comparison_expressions:
+NAME op STRING_VALUE { 
 	handleNameInAssigning($1, CHARACTERS, VAR);
 }
-|  NAME'=''='NAME {
-	validateTwoAssigningOperants($1, $4, VAR)
+| NAME op NAME {
+	validateTwoAssigningOperants($1, $3, VAR)
 } 
-|  function_usage '=''=' function_usage
-|  object_access'=''='object_access
-|  object_access'=''='NAME
+|  function_usage op function_usage
+|  object_access op object_access
+|  object_access op NAME
 |  NAME'=''='bool_value {
 	if (handleNameInAssigning($1, LOGICAL, VAR)) {
 		nameExistsInOrigin($1, VAR);
 	}
 }
-|  NAME'=''='expression  { 
+|  NAME op expression  { 
 	nameInTypeExistsInOrigin($1, NUMERICAL, VAR); //only 'int' type is allowed!!!
 	isAssigned = false;
-}
-;
-
-not_equal_comparision: 
-NAME'!''='STRING_VALUE { 
-	handleNameInAssigning($1, CHARACTERS, VAR);
-}
-|  NAME'!''='NAME {
-	validateTwoAssigningOperants($1, $4, VAR)
-} 
-|  object_access'!''='object_access
-|  object_access'!''='NAME
-|  NAME'!''='bool_value {
-	if (handleNameInAssigning($1, LOGICAL, VAR)) {
-		nameExistsInOrigin($1, VAR);
-	}
 }
 ;
 
@@ -322,6 +294,22 @@ bool_value: TRUE
 object_access: DATA_ACCESS {
 	validateExistenceAndIsNotPrimitve(getNameFromDataAccess($1));
 }
+;
+
+expression: NUMBER { 
+	isAssigned = true;
+}
+|	NAME { 
+	isAssigned = handleNameInAssigning($1, NUMERICAL, VAR); 
+}
+|   object_access {
+	isAssigned = true;
+}
+|	expression'+'expression { }
+|	expression'-'expression { }
+|	expression'*'expression { }
+|	expression'/'expression { }
+|	function_usage { nameInTypeExistsInOrigin(getUsedFunctionName(), NUMERICAL, FUNC); setUsedFunctionName(NONE); isAssigned=true; }
 ;
 
 %%

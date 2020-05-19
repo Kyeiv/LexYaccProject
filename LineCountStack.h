@@ -14,7 +14,7 @@ LineCounter* linesStack; //stack representing number of lines in files
 
 LineCounter* newLineCounter(char* fileName) {
 	struct LineCounter* elem = malloc(sizeof(struct LineCounter));
-	elem->lines = 0;
+	elem->lines = 1;
 	elem->filename = fileName;
 	elem->next = 0;
 	return elem;
