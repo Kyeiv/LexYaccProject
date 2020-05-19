@@ -1,5 +1,7 @@
 #include "fileWithClass.h"
 
+using namespace std;
+
 int intFunc(int var) {
 	TestClass obj;
 	obj.a = var;
@@ -17,4 +19,14 @@ bool shouldIncrement(string str) {
 		return true;
 	}
 	return false;
+}
+
+string incOrDec(int count) {
+	if (count > 10) {
+		return "inc";
+	} else if (count < 10) {
+		return "dec";
+	} else {
+		return "error";
+	}
 }

@@ -1,9 +1,8 @@
 #include "fileWithFunc.h"
-#include <string.h>
 
 int main() {
 	int count = intFunc(10);
-	string str = "inc";
+	std::string str = incOrDec(count);
 	bool boolean = shouldIncrement(str);
 	int retValue;
 	for (int i = 0; i < count; i++) {

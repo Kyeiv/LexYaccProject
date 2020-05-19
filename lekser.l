@@ -10,7 +10,9 @@
 %}
 %%
 double { return DOUBLE; }
-string { return STRING; }
+std::string { return STRING; }
+"using namespace std" { setUsingStd(); }
+string { validateStd(); return STRING; }
 int { return INT; }
 bool { return BOOL; }
 true { return TRUE; }

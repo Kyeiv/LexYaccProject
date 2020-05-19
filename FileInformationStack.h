@@ -2,21 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct LineCounter {
-	struct LineCounter* next;
+struct FileInformation {
+	struct FileInformation* next;
 	int lines;
 	char* filename;
+	bool usesNamespaceStd;
 };
 
-typedef struct LineCounter LineCounter;
+typedef struct FileInformation FileInformation;
 
-LineCounter* linesStack; //stack representing number of lines in files
+FileInformation* linesStack; //stack representing number of lines in files
 
-LineCounter* newLineCounter(char* fileName) {
-	struct LineCounter* elem = malloc(sizeof(struct LineCounter));
+FileInformation* newLineCounter(char* fileName) {
+	struct FileInformation* elem = malloc(sizeof(struct FileInformation));
 	elem->lines = 1;
 	elem->filename = fileName;
 	elem->next = 0;
+	elem->usesNamespaceStd = false;
 	return elem;
 }
 
@@ -27,7 +29,7 @@ void initStackNewLineCounter(char* filename)
 
 void addLineCounter(char* fileName)
 {
-	LineCounter* elem = newLineCounter(fileName);
+	FileInformation* elem = newLineCounter(fileName);
 
 	if (linesStack == 0) {
 		linesStack = elem;
@@ -43,7 +45,7 @@ void popLineCounter()
 	if (linesStack == 0)
 		return 0;
 
-	LineCounter* elem = linesStack;
+	FileInformation* elem = linesStack;
 	linesStack = linesStack->next;
 
 	free(elem);
@@ -68,10 +70,18 @@ void cleanStack()
 {
 	while (linesStack != NULL)
 	{
-		LineCounter* elem = linesStack;
+		FileInformation* elem = linesStack;
 		linesStack = linesStack->next;
 		free(elem);
 	}
 }
 
+void validateStd() {
+	if (!linesStack->usesNamespaceStd) {
+		printf("ERROR: 'string' requires namespace std. \n");
+	}
+}
 
+void setUsingStd() {
+	linesStack->usesNamespaceStd = true;
+}

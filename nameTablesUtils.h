@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "NameOrigin.h"
-#include "LineCountStack.h"
+#include "FileInformationStack.h"
 #include "Stack.h"
 
 #define NULL 0

@@ -124,7 +124,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LineCountStack.h" />
+    <ClInclude Include="FileInformationStack.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="NameOrigin.h" />
     <ClInclude Include="nameTablesUtils.h" />
