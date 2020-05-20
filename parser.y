@@ -49,6 +49,7 @@ program: instruction {
 		printf("Program correct, no errors detected\n");	
 	}
 }
+	| error { yyerrok; }
 	|
 	;
 
@@ -312,7 +313,7 @@ expression: NUMBER {
 %%
 void yyerror(char* s) {
 		setErrorFlag();
-		printf("\rSYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines());
+		printf("\rSYNTAX ERROR! In file '%s', line: %d\n", getCurrentFileName(), getCurrentLines()-1);
 }
 
 int main(void) {
